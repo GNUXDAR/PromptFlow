@@ -238,6 +238,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get settingsFocusGuide => 'फ़ोकस लाइन गाइड';
 
   @override
+  String get settingsHighlightSpoken => 'जो मैं बोलूँ उसे हाइलाइट करें (आवाज़)';
+
+  @override
   String get voiceTitle => 'आवाज़ अनुसरण';
 
   @override

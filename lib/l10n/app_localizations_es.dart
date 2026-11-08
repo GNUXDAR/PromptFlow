@@ -238,6 +238,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsFocusGuide => 'Guía de la línea de enfoque';
 
   @override
+  String get settingsHighlightSpoken => 'Resaltar lo que digo (voz)';
+
+  @override
   String get voiceTitle => 'Seguimiento por voz';
 
   @override

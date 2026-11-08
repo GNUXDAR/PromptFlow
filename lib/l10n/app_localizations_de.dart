@@ -238,6 +238,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settingsFocusGuide => 'Hilfslinie für Fokuszeile';
 
   @override
+  String get settingsHighlightSpoken => 'Gesprochenes hervorheben (Sprache)';
+
+  @override
   String get voiceTitle => 'Sprachverfolgung';
 
   @override

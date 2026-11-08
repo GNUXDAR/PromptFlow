@@ -188,6 +188,7 @@
   "settingsMirrorH": "Horizontal mirror (H)",
   "settingsMirrorV": "Vertical mirror (V)",
   "settingsFocusGuide": "Focus line guide",
+  "settingsHighlightSpoken": "Highlight what I say (voice)",
   "voiceTitle": "Voice following",
   "voiceLanguage": "Voice language",
   "voiceStatusDownloading": "Downloading {percent} %",

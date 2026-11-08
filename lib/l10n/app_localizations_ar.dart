@@ -242,6 +242,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsFocusGuide => 'دليل خط التركيز';
 
   @override
+  String get settingsHighlightSpoken => 'تمييز ما أقوله (الصوت)';
+
+  @override
   String get voiceTitle => 'تتبّع الصوت';
 
   @override

@@ -508,6 +508,12 @@ abstract class AppLocalizations {
   /// **'Focus line guide'**
   String get settingsFocusGuide;
 
+  /// No description provided for @settingsHighlightSpoken.
+  ///
+  /// In en, this message translates to:
+  /// **'Highlight what I say (voice)'**
+  String get settingsHighlightSpoken;
+
   /// No description provided for @voiceTitle.
   ///
   /// In en, this message translates to:

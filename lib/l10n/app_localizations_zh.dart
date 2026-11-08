@@ -237,6 +237,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsFocusGuide => '焦点线指示';
 
   @override
+  String get settingsHighlightSpoken => '高亮我说出的内容（语音）';
+
+  @override
   String get voiceTitle => '语音跟随';
 
   @override

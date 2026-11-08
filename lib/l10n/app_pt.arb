@@ -65,6 +65,7 @@
   "settingsMirrorH": "Espelho horizontal (H)",
   "settingsMirrorV": "Espelho vertical (V)",
   "settingsFocusGuide": "Guia da linha de foco",
+  "settingsHighlightSpoken": "Destacar o que eu digo (voz)",
   "voiceTitle": "Acompanhamento de voz",
   "voiceLanguage": "Idioma da voz",
   "voiceStatusDownloading": "Baixando {percent} %",

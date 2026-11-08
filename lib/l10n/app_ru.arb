@@ -65,6 +65,7 @@
   "settingsMirrorH": "Зеркально по горизонтали (H)",
   "settingsMirrorV": "Зеркально по вертикали (V)",
   "settingsFocusGuide": "Направляющая линии чтения",
+  "settingsHighlightSpoken": "Подсвечивать сказанное (голос)",
   "voiceTitle": "Слежение за голосом",
   "voiceLanguage": "Язык речи",
   "voiceStatusDownloading": "Загрузка {percent} %",

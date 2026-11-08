@@ -238,6 +238,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsFocusGuide => 'Repère de la ligne de lecture';
 
   @override
+  String get settingsHighlightSpoken => 'Surligner ce que je dis (voix)';
+
+  @override
   String get voiceTitle => 'Suivi vocal';
 
   @override

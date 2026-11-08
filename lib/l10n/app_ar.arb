@@ -65,6 +65,7 @@
   "settingsMirrorH": "انعكاس أفقي (H)",
   "settingsMirrorV": "انعكاس رأسي (V)",
   "settingsFocusGuide": "دليل خط التركيز",
+  "settingsHighlightSpoken": "تمييز ما أقوله (الصوت)",
   "voiceTitle": "تتبّع الصوت",
   "voiceLanguage": "لغة الصوت",
   "voiceStatusDownloading": "جارٍ التنزيل {percent}%",

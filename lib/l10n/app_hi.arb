@@ -65,6 +65,7 @@
   "settingsMirrorH": "क्षैतिज मिरर (H)",
   "settingsMirrorV": "लंबवत मिरर (V)",
   "settingsFocusGuide": "फ़ोकस लाइन गाइड",
+  "settingsHighlightSpoken": "जो मैं बोलूँ उसे हाइलाइट करें (आवाज़)",
   "voiceTitle": "आवाज़ अनुसरण",
   "voiceLanguage": "आवाज़ की भाषा",
   "voiceStatusDownloading": "डाउनलोड हो रहा है {percent}%",

@@ -238,6 +238,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settingsFocusGuide => 'Guida della linea di lettura';
 
   @override
+  String get settingsHighlightSpoken => 'Evidenzia ciò che dico (voce)';
+
+  @override
   String get voiceTitle => 'Inseguimento vocale';
 
   @override

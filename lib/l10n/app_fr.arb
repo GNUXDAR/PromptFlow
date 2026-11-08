@@ -65,6 +65,7 @@
   "settingsMirrorH": "Miroir horizontal (H)",
   "settingsMirrorV": "Miroir vertical (V)",
   "settingsFocusGuide": "Repère de la ligne de lecture",
+  "settingsHighlightSpoken": "Surligner ce que je dis (voix)",
   "voiceTitle": "Suivi vocal",
   "voiceLanguage": "Langue de la voix",
   "voiceStatusDownloading": "Téléchargement {percent} %",

@@ -240,6 +240,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settingsFocusGuide => 'Направляющая линии чтения';
 
   @override
+  String get settingsHighlightSpoken => 'Подсвечивать сказанное (голос)';
+
+  @override
   String get voiceTitle => 'Слежение за голосом';
 
   @override
