@@ -17,9 +17,15 @@ flutter test                  # motor, parser, protocolo (sockets reales) y voz
 tool/build_release.sh         # o: android | linux
 ```
 
-Deja en `dist/` los archivos con su nombre final: `PromptFlow-<versión>-android-arm64.apk` (la mayoría de móviles), `-android-arm32.apk`, `-android-x86_64.apk`, `-android-universal.apk`, `PromptFlow-<versión>-linux-x64.tar.gz` y `SHA256SUMS`.
+Deja en `dist/` los archivos con su nombre final: `PromptFlow-<versión>-android-arm64.apk` (la mayoría de móviles), `-android-arm32.apk`, `-android-x86_64.apk`, `-android-universal.apk`, `PromptFlow-<versión>-linux-x64.tar.gz`, `promptflow_<versión>_amd64.deb` y `SHA256SUMS`.
 
-Instalar en Linux (aparece en el menú de aplicaciones con su icono):
+Instalar en Debian/Ubuntu (aparece en el menú de aplicaciones con su icono):
+
+```bash
+sudo apt install ./promptflow_<versión>_amd64.deb      # desinstalar: sudo apt remove promptflow
+```
+
+En otras distribuciones, sin root:
 
 ```bash
 tar -xzf PromptFlow-<versión>-linux-x64.tar.gz
