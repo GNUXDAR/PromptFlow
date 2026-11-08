@@ -9,14 +9,17 @@ flutter run -d <android-id>   # prompter o mando remoto
 flutter test                  # motor, parser, protocolo (sockets reales) y voz
 ```
 
-### Seguimiento por voz en Linux (opcional)
+### Seguimiento por voz (opcional, sin conexión)
 
-```bash
-tool/setup_vosk_linux.sh      # descarga libvosk y el modelo español (~40 MB)
-flutter run -d linux          # aparece el botón de micrófono en el HUD
-```
+El texto avanza al ritmo de tu voz gracias a [Vosk](https://alphacephei.com/vosk/), un reconocimiento de voz local. Hay modelos para 11 idiomas: es, en, pt, fr, de, it, ru, zh, ja, ko e hi.
 
-Se usa el micrófono predeterminado de PulseAudio/PipeWire y todo funciona sin conexión.
+- **Android:** abre un guion y ve a **Ajustes → Voz**. Elige el idioma, pulsa *Descargar modelo* y luego el micrófono del HUD. La primera vez la app pide permiso de micrófono.
+- **Linux:** instala el motor una vez y descarga el modelo desde la app o con el script:
+  ```bash
+  tool/setup_vosk_linux.sh      # libvosk + modelo español
+  flutter run -d linux
+  ```
+  Se usa el micrófono predeterminado de PulseAudio/PipeWire.
 
 * Arquitectura y justificación del stack: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 * Protocolo WebSocket/UDP: [`docs/PROTOCOL.md`](docs/PROTOCOL.md)
@@ -50,7 +53,8 @@ Gestos en la pantalla táctil: doble toque para reproducir o pausar, arrastre ve
 
 ### Por dónde empezar
 
-- **Plugin nativo de Vosk para Android** (Kotlin). El de Linux, en `linux/runner/vosk_stt_plugin.cc`, sirve de referencia, y el contrato del canal `promptflow/stt` está en [`docs/ARCHITECTURE.md §5`](docs/ARCHITECTURE.md).
+- **Afinar el seguimiento por voz** con grabaciones reales en distintos idiomas (ganancia, zona muerta, ventana del alineador).
+- **Modelo de voz en árabe** apto para móvil, si aparece uno pequeño.
 - **Rol `follower`**: un segundo dispositivo que muestre el guion siguiendo al prompter principal.
 - **Pantalla siempre encendida** durante la lectura (`wakelock_plus`).
 - **Empaquetado**: Flatpak o AppImage para Linux y builds de Android.

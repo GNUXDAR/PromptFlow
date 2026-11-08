@@ -222,9 +222,10 @@ const char* WavOverride() {
   return (wav != nullptr && *wav != '\0') ? wav : nullptr;
 }
 
+// Formato actual (am/, conf/) o antiguo (todo en la raíz, p. ej. small-pt-0.3).
 bool ModelLooksValid(const std::string& path) {
-  return g_file_test((path + "/am").c_str(), G_FILE_TEST_IS_DIR) &&
-         g_file_test((path + "/conf").c_str(), G_FILE_TEST_IS_DIR);
+  auto exists = [&](const char* rel) { return g_file_test((path + rel).c_str(), G_FILE_TEST_IS_REGULAR); };
+  return (exists("/am/final.mdl") || exists("/final.mdl")) && (exists("/conf/mfcc.conf") || exists("/mfcc.conf"));
 }
 
 // ─── Puente hilo de trabajo → hilo principal (GTK/Flutter no son thread-safe) ───
