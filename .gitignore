@@ -49,3 +49,6 @@ app.*.map.json
 
 # Vosk: binarios y modelos se descargan con tool/setup_vosk_linux.sh
 /linux/third_party/
+
+# Artefactos de release (tool/build_release.sh)
+/dist/
