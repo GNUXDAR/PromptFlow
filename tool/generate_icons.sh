@@ -4,13 +4,13 @@
 #
 #   Android: mipmap-*/ic_launcher.png (legacy) + ic_launcher_foreground.png y
 #            ic_launcher_monochrome.png (adaptativo / icono temático Android 13+)
-#   Linux:   linux/packaging/icons/hicolor/<N>x<N>/apps/com.promptflow.promptflow.png
+#   Linux:   linux/packaging/icons/hicolor/<N>x<N>/apps/com.gnuxdar.promptflow.png
 #   App:     assets/branding/logo.png (pantalla «Acerca de»)
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 B=assets/branding
-APP_ID=com.promptflow.promptflow
+APP_ID=com.gnuxdar.promptflow
 png() { inkscape "$1" -w "$3" -h "$3" -o "$2" >/dev/null 2>&1; }
 
 RES=android/app/src/main/res

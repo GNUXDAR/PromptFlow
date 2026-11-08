@@ -1,4 +1,4 @@
-package com.promptflow.promptflow
+package com.gnuxdar.promptflow
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine

@@ -36,6 +36,10 @@ abstract final class VoiceModels {
     VoiceModel('hi', 'हिन्दी', 'vosk-model-small-hi-0.22', 42),
   ];
 
+  /// Idioma de voz por defecto para un idioma del sistema.
+  static String defaultFor(String languageCode) =>
+      all.any((m) => m.code == languageCode) ? languageCode : 'es';
+
   static VoiceModel byCode(String code) => all.firstWhere((m) => m.code == code, orElse: () => all.first);
 
   static String dirFor(Directory root, String code) => '${root.path}/models/vosk-$code';

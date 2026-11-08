@@ -37,8 +37,15 @@ class PrompterScreen extends StatefulWidget {
 }
 
 class _PrompterScreenState extends State<PrompterScreen> with SingleTickerProviderStateMixin {
-  late final PrompterController _c =
-      PrompterController(vsync: this, repository: widget.repository, script: widget.script);
+  // Idioma de voz por defecto: el del sistema si hay modelo; si no, español.
+  late final PrompterController _c = PrompterController(
+    vsync: this,
+    repository: widget.repository,
+    script: widget.script,
+    settings: PrompterSettings(
+      voiceLanguage: VoiceModels.defaultFor(WidgetsBinding.instance.platformDispatcher.locale.languageCode),
+    ),
+  );
   late final Future<List<String>> _ips = RemoteServer.lanAddresses();
   bool _hud = true;
   Timer? _hudTimer;
