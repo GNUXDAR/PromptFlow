@@ -12,6 +12,7 @@ import '../../engine/scroll_engine.dart';
 import '../../input/pedal_shortcuts.dart';
 import '../../remote/protocol/messages.dart';
 import '../../remote/server/remote_server.dart';
+import '../../voice/voice_models.dart';
 import '../controllers/prompter_controller.dart';
 
 /// Vista de lectura a pantalla completa. Hospeda el servidor de control
@@ -329,10 +330,69 @@ class _SettingsSheet extends StatelessWidget {
                 value: s.showFocusGuide,
                 onChanged: (v) => set((p) => p.copyWith(showFocusGuide: v)),
               ),
+              const Divider(height: 32),
+              _VoiceSection(controller: controller),
             ]),
           ),
         );
       },
     );
+  }
+}
+
+/// Ajustes de voz: idioma del modelo, estado y descarga.
+class _VoiceSection extends StatelessWidget {
+  const _VoiceSection({required this.controller});
+  final PrompterController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = controller;
+    final t = Theme.of(context).textTheme;
+    final model = VoiceModels.byCode(c.settings.voiceLanguage);
+    final progress = c.voiceModelProgress;
+
+    final String status;
+    if (progress != null) {
+      status = progress < 0 ? 'Instalando modelo…' : 'Descargando ${(progress * 100).round()} %';
+    } else if (c.voiceAvailable) {
+      status = 'Listo: pulsa el micrófono del HUD para que el texto siga tu voz';
+    } else if (c.voiceModelInstalled) {
+      status = 'Modelo instalado, pero falta el motor Vosk (en Linux: tool/setup_vosk_linux.sh)';
+    } else {
+      status = 'Modelo no instalado (${model.sizeMb} MB, se descarga una sola vez)';
+    }
+
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text('Seguimiento por voz', style: t.titleMedium),
+      const SizedBox(height: 8),
+      Row(children: [
+        const SizedBox(width: 150, child: Text('Idioma de la voz')),
+        DropdownButton<String>(
+          value: model.code,
+          onChanged: progress != null ? null : (v) => c.setVoiceLanguage(v!),
+          items: [
+            for (final m in VoiceModels.all) DropdownMenuItem(value: m.code, child: Text(m.name)),
+          ],
+        ),
+      ]),
+      const SizedBox(height: 8),
+      Text(status, style: t.bodyMedium),
+      if (c.voiceError != null)
+        Text(c.voiceError!, style: t.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.error)),
+      if (progress != null) ...[
+        const SizedBox(height: 8),
+        LinearProgressIndicator(value: progress < 0 ? null : progress),
+        TextButton(onPressed: c.cancelVoiceModelInstall, child: const Text('Cancelar')),
+      ] else if (!c.voiceModelInstalled)
+        Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: FilledButton.icon(
+            onPressed: c.installVoiceModel,
+            icon: const Icon(Icons.download),
+            label: Text('Descargar modelo (${model.sizeMb} MB)'),
+          ),
+        ),
+    ]);
   }
 }

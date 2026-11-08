@@ -14,6 +14,7 @@ import '../../remote/protocol/messages.dart';
 import '../../remote/server/remote_server.dart';
 import '../../voice/speech_recognizer.dart';
 import '../../voice/voice_aligner.dart';
+import '../../voice/voice_models.dart';
 
 /// ViewModel del prompter. Punto único de entrada de comandos: teclado,
 /// pedal, gestos, mando remoto y voz llaman a [execute].
@@ -57,6 +58,15 @@ class PrompterController extends ChangeNotifier implements RemoteHost {
   bool get voiceActive => _voiceActive;
   bool get voiceAvailable => _voiceAvailable ?? false;
 
+  /// Modelo del idioma elegido presente en disco.
+  bool get voiceModelInstalled => _voiceModelInstalled;
+  bool _voiceModelInstalled = false;
+
+  /// Progreso de descarga del modelo: null = sin descarga; -1 = extrayendo; 0–1 = descargando.
+  double? get voiceModelProgress => _voiceModelProgress;
+  double? _voiceModelProgress;
+  VoiceModelInstaller? _installer;
+
   Future<void> startServer() async {
     try {
       await server.start();
@@ -64,7 +74,7 @@ class PrompterController extends ChangeNotifier implements RemoteHost {
     } on SocketException catch (e) {
       serverError = 'No se pudo abrir el puerto ${PfProtocol.defaultWsPort}: ${e.osError?.message ?? e.message}';
     }
-    _voiceAvailable = await _recognizer.isAvailable(modelPath: await _modelPath());
+    await refreshVoiceAvailability();
     notifyListeners();
   }
 
@@ -163,7 +173,47 @@ class PrompterController extends ChangeNotifier implements RemoteHost {
 
   /// Modelo de Vosk: `<documentos>/PromptFlow/models/vosk-es`
   /// (lo descarga `tool/setup_vosk_linux.sh`).
-  Future<String> _modelPath() async => '${(await repository.root).path}/models/vosk-es';
+  Future<String> _modelPath() async => VoiceModels.dirFor(await repository.root, _settings.voiceLanguage);
+
+  Future<void> refreshVoiceAvailability() async {
+    final path = await _modelPath();
+    _voiceModelInstalled = await VoiceModels.isInstalled(path);
+    _voiceAvailable = await _recognizer.isAvailable(modelPath: path);
+    notifyListeners();
+  }
+
+  /// Cambia el idioma de reconocimiento (desactiva la voz si estaba activa).
+  Future<void> setVoiceLanguage(String code) async {
+    if (_voiceActive) await setVoiceSync(false);
+    updateSettings((s) => s.copyWith(voiceLanguage: code));
+    await refreshVoiceAvailability();
+  }
+
+  /// Descarga e instala el modelo del idioma elegido desde alphacephei.com.
+  Future<void> installVoiceModel() async {
+    if (_installer != null) return;
+    voiceError = null;
+    final installer = _installer =
+        VoiceModelInstaller(VoiceModels.byCode(_settings.voiceLanguage), await _modelPath());
+    _voiceModelProgress = 0;
+    notifyListeners();
+    try {
+      await installer.install(onProgress: (p) {
+        _voiceModelProgress = p ?? -1;
+        notifyListeners();
+      });
+    } on VoiceModelCancelled {
+      // El usuario canceló.
+    } on Object catch (e) {
+      voiceError = 'No se pudo descargar el modelo: $e';
+    } finally {
+      _installer = null;
+      _voiceModelProgress = null;
+      await refreshVoiceAvailability();
+    }
+  }
+
+  void cancelVoiceModelInstall() => _installer?.cancel();
 
   /// Gramática para Vosk: solo las palabras del guion más `[unk]` (cualquier
   /// otra cosa). Con un modelo pequeño mejora mucho la precisión y la latencia.
@@ -176,7 +226,9 @@ class PrompterController extends ChangeNotifier implements RemoteHost {
     if (enabled) {
       final model = await _modelPath();
       if (!await _recognizer.isAvailable(modelPath: model)) {
-        voiceError = 'Vosk no está instalado (tool/setup_vosk_linux.sh)';
+        voiceError = !await VoiceModels.isInstalled(model)
+            ? 'Descarga el modelo de voz en Ajustes → Voz'
+            : 'Vosk no está instalado (tool/setup_vosk_linux.sh)';
         notifyListeners();
         return;
       }
@@ -267,6 +319,7 @@ class PrompterController extends ChangeNotifier implements RemoteHost {
   @override
   void dispose() {
     _voiceSub?.cancel();
+    _installer?.cancel();
     server.dispose();
     engine.dispose();
     super.dispose();

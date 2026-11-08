@@ -19,7 +19,8 @@ android {
         applicationId = "com.promptflow.promptflow"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        // API 26 (Android 8.0): mínimo del proyecto.
+        minSdk = maxOf(flutter.minSdkVersion, 26)
         targetSdk = flutter.targetSdkVersion
         // Uses the version code from pubspec.yaml. When using split APKs, 1000 * ABI_VERSION
         // is added automatically by Flutter. (https://developer.android.com/studio/build/configure-apk-splits#configure-APK-versions)
@@ -46,4 +47,10 @@ kotlin {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    // Reconocimiento de voz offline (incluye libvosk.so para arm64-v8a,
+    // armeabi-v7a, x86 y x86_64, y JNA como AAR).
+    implementation("com.alphacephei:vosk-android:0.3.75")
 }

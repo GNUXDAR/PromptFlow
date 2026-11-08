@@ -13,6 +13,7 @@ final class PrompterSettings {
     this.mirrorVertical = false,
     this.showFocusGuide = true,
     this.wpm = 140,
+    this.voiceLanguage = 'es',
   });
 
   /// Tamaño en píxeles lógicos.
@@ -35,6 +36,9 @@ final class PrompterSettings {
   /// en px/s porque cada dispositivo tiene un tamaño de letra distinto.
   final double wpm;
 
+  /// Idioma del modelo de voz (código de `VoiceModels`).
+  final String voiceLanguage;
+
   static const minWpm = 40.0;
   static const maxWpm = 400.0;
 
@@ -52,6 +56,7 @@ final class PrompterSettings {
     bool? mirrorVertical,
     bool? showFocusGuide,
     double? wpm,
+    String? voiceLanguage,
   }) =>
       PrompterSettings(
         fontSize: (fontSize ?? this.fontSize).clamp(16, 240).toDouble(),
@@ -63,6 +68,7 @@ final class PrompterSettings {
         mirrorVertical: mirrorVertical ?? this.mirrorVertical,
         showFocusGuide: showFocusGuide ?? this.showFocusGuide,
         wpm: (wpm ?? this.wpm).clamp(minWpm, maxWpm).toDouble(),
+        voiceLanguage: voiceLanguage ?? this.voiceLanguage,
       );
 }
 

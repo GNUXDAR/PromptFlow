@@ -105,8 +105,17 @@ Micro 16 kHz ─▶ VAD (Kaldi en Vosk) ─▶ STT streaming (parciales ~150 ms)
 
 Medido en desarrollo: el micrófono se abre y el modelo español carga en ~0,25 s; `stop` tarda ~80 ms. La transcripción del WAV de ejemplo de Vosk coincide palabra por palabra con `libvosk` usada directamente.
 
-### Android (pendiente)
-Plugin Kotlin con `com.alphacephei:vosk-android` y `SpeechService(recognizer, 16000f)`. Debe cumplir el mismo contrato: emitir `{"raw","final"}` desde `onPartialResult`/`onResult`.
+### Android (implementado): `android/app/src/main/kotlin/.../VoskSttPlugin.kt`
+* Dependencia `com.alphacephei:vosk-android:0.3.75`: incluye `libvosk.so` para arm64-v8a, armeabi-v7a, x86 y x86_64, y JNA como AAR.
+* `SpeechService(recognizer, 16000f)` captura con `AudioRecord` en su propio hilo y entrega los resultados en el hilo principal. El plugin solo reenvía los parciales que cambian.
+* El modelo se carga en un `Executor` (sin bloquear la UI) y se conserva entre `start` y `stop`.
+* Permiso `RECORD_AUDIO` en tiempo de ejecución: `start` lo solicita y continúa al concederse; si se deniega, responde con el error `stt_permission`.
+* Mismo contrato de canales que en Linux. El registro se hace en `MainActivity.configureFlutterEngine`.
+
+### Modelos por idioma y descarga desde la app (`lib/voice/voice_models.dart`)
+* Catálogo de 11 modelos pequeños verificados en alphacephei.com (31–83 MB): es, en, pt, fr, de, it, ru, zh, ja, ko, hi. El árabe no se incluye porque sus modelos pesan 158–318 MB.
+* Se elige en **Ajustes → Voz**. El modelo se descarga una vez a `<documentos>/PromptFlow/models/vosk-<idioma>`, con progreso y opción de cancelar, y se extrae en otro isolate.
+* Se aceptan los dos formatos de Vosk: el actual (`am/`, `conf/`) y el antiguo, con todo en la raíz (por ejemplo `small-pt-0.3`).
 
 ## 6. Formato de guion
 
@@ -121,7 +130,6 @@ En `.txt` solo se interpretan las etiquetas entre corchetes.
 
 ## 7. Pendiente / siguientes pasos
 
-* Plugin nativo Vosk para Android (el de Linux ya está), descrito en §5.
 * Mantener la pantalla encendida: `wakelock_plus` en `PrompterScreen`.
 * Rol `follower`: un segundo dispositivo que muestra el mismo guion siguiendo `state.snapshot` (el protocolo ya transmite posición en palabras).
 * Empaquetado: Flatpak/AppImage (Linux) y AAB firmado (Android); `flutter build linux --target-platform linux-arm64` para ARM64.
