@@ -9,8 +9,9 @@ plugins {
 // Firma (en orden de prioridad):
 //  1. android/key.properties → keystore de publicación propio (storeFile,
 //     storePassword, keyAlias, keyPassword). Recomendado para distribuir.
-//  2. android/debug.keystore del proyecto → mismo esquema que Synapse
-//     (com.actecnology.*): copiando ese archivo, ambas apps comparten firma.
+//     Las apps de GNUXDAR comparten una clave de subida que vive fuera de los
+//     repos (~/.config/gnuxdar/keys); key.properties solo apunta a ella.
+//  2. android/debug.keystore del proyecto (solo para pruebas locales).
 //  3. Si no hay ninguno, el debug.keystore de este equipo (~/.android).
 // Ningún keystore se versiona (ver .gitignore).
 val keyProperties = Properties().apply {
@@ -20,7 +21,7 @@ val keyProperties = Properties().apply {
 val projectDebugKeystore = rootProject.file("debug.keystore")
 
 android {
-    namespace = "com.actecnology.promptflow"
+    namespace = "com.gnuxdar.promptflow"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -31,7 +32,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.actecnology.promptflow"
+        applicationId = "com.gnuxdar.promptflow"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         // API 24 (Android 7.0), igual que Synapse: amplía los teléfonos compatibles.

@@ -5,6 +5,7 @@
 #   dist/PromptFlow-<versión>-android-arm32.apk     (móviles antiguos)
 #   dist/PromptFlow-<versión>-android-x86_64.apk    (emuladores, Chromebooks)
 #   dist/PromptFlow-<versión>-android-universal.apk (todas las arquitecturas)
+#   dist/PromptFlow-<versión>-android-play.aab      (para subir a Google Play)
 #   dist/PromptFlow-<versión>-linux-<arch>.tar.gz   (descomprimir y ejecutar ./promptflow)
 #   dist/SHA256SUMS
 #
@@ -28,6 +29,9 @@ if [[ "$TARGET" == "android" || "$TARGET" == "all" ]]; then
   cp "$OUT/app-x86_64-release.apk"      "$DIST/$NAME-android-x86_64.apk"
   flutter build apk --release
   cp "$OUT/app-release.apk"             "$DIST/$NAME-android-universal.apk"
+  # Google Play publica desde un Android App Bundle (firmado con la clave de subida).
+  flutter build appbundle --release
+  cp build/app/outputs/bundle/release/app-release.aab "$DIST/$NAME-android-play.aab"
 fi
 
 if [[ "$TARGET" == "linux" || "$TARGET" == "all" ]]; then

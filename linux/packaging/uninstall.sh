@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Desinstala PromptFlow del usuario actual. Tus guiones (Documentos/PromptFlow) no se tocan.
 set -euo pipefail
-APP_ID=com.actecnology.promptflow
+APP_ID=com.gnuxdar.promptflow
 DATA="${XDG_DATA_HOME:-$HOME/.local/share}"
 rm -rf "$DATA/promptflow"
 rm -f "$DATA/applications/$APP_ID.desktop" "$HOME/.local/bin/promptflow"

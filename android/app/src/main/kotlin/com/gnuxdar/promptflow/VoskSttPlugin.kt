@@ -1,4 +1,4 @@
-package com.actecnology.promptflow
+package com.gnuxdar.promptflow
 
 import android.Manifest
 import android.app.Activity
