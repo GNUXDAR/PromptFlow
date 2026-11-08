@@ -187,7 +187,7 @@ class _HudState extends State<_Hud> {
                 future: widget.ips,
                 builder: (context, snap) {
                   final server = c.server;
-                  final text = c.serverError ??
+                  final text = c.voiceError ?? c.serverError ??
                       (server.running
                           ? '${(snap.data ?? const []).take(1).join()}:${server.port}  PIN ${server.pin}  '
                               '· ${server.clientCount} mando(s)'

@@ -9,6 +9,15 @@ flutter run -d <android-id>   # prompter o mando remoto
 flutter test                  # motor, parser, protocolo (sockets reales) y voz
 ```
 
+### Seguimiento por voz en Linux (opcional)
+
+```bash
+tool/setup_vosk_linux.sh      # descarga libvosk y el modelo español (~40 MB)
+flutter run -d linux          # aparece el botón de micrófono en el HUD
+```
+
+Se usa el micrófono predeterminado de PulseAudio/PipeWire y todo funciona sin conexión.
+
 * Arquitectura y justificación del stack: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 * Protocolo WebSocket/UDP: [`docs/PROTOCOL.md`](docs/PROTOCOL.md)
 * Motor de scroll: [`lib/engine/scroll_engine.dart`](lib/engine/scroll_engine.dart) + [`lib/engine/prompter_painter.dart`](lib/engine/prompter_painter.dart)
@@ -37,7 +46,7 @@ Gestos en la pantalla táctil: doble toque para reproducir o pausar, arrastre ve
 
 Estas son las piezas pendientes con más impacto (detalle en [`docs/ARCHITECTURE.md §7`](docs/ARCHITECTURE.md)):
 
-- **Plugins nativos de Vosk** para el seguimiento por voz: Kotlin (Android) y C++ con `libvosk` (Linux). El contrato del canal `promptflow/stt` está en `ARCHITECTURE.md §5`.
+- **Plugin nativo de Vosk para Android** (Kotlin). El de Linux ya está en `linux/runner/vosk_stt_plugin.cc` y sirve de referencia; el contrato del canal `promptflow/stt` está en `ARCHITECTURE.md §5`.
 - **Rol `follower`**: un segundo dispositivo que muestre el guion siguiendo al prompter principal.
 - **Pantalla siempre encendida** durante la lectura (`wakelock_plus`).
 - **Empaquetado**: Flatpak / AppImage para Linux y builds de Android.
