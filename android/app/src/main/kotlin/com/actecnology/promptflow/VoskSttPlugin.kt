@@ -1,4 +1,4 @@
-package com.promptflow.promptflow
+package com.actecnology.promptflow
 
 import android.Manifest
 import android.app.Activity

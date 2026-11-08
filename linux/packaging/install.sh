@@ -6,7 +6,7 @@
 #   ~/.local/bin/promptflow               acceso desde la terminal
 set -euo pipefail
 SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-APP_ID=com.promptflow.promptflow
+APP_ID=com.actecnology.promptflow
 DATA="${XDG_DATA_HOME:-$HOME/.local/share}"
 DEST="$DATA/promptflow"
 
