@@ -1,0 +1,38 @@
+name: Reportar un error
+description: Algo no funciona como debería
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: ¿Qué pasó?
+      description: Qué hiciste, qué esperabas y qué ocurrió en realidad.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Pasos para reproducirlo
+      placeholder: |
+        1. Abrir el guion …
+        2. Pulsar …
+        3. Ver …
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Plataforma
+      options: [Linux, Android, Ambas]
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Versión y entorno
+      placeholder: "PromptFlow 1.0.0 · Ubuntu 24.04 Wayland · Pixel 8 Android 15"
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs o capturas
+      render: text

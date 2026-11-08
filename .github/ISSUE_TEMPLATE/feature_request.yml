@@ -1,0 +1,27 @@
+name: Proponer una función
+description: Una idea para mejorar PromptFlow
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: ¿Qué problema resuelve?
+      description: Describe la situación de uso, no solo la solución.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Propuesta
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternativas consideradas
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Contribución
+      options:
+        - label: Me gustaría implementarlo yo (ver CONTRIBUTING.md)

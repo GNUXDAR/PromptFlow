@@ -40,37 +40,23 @@ Gestos en la pantalla táctil: doble toque para reproducir o pausar, arrastre ve
 
 ## Contribuir
 
-¡Las contribuciones son bienvenidas! PromptFlow es un proyecto abierto y cualquier ayuda suma: código, pruebas en hardware real, documentación o ideas.
+¡Las contribuciones son bienvenidas! Código, pruebas en hardware real, documentación, traducciones o ideas: todo suma.
+
+**Lee primero la [guía de contribución](CONTRIBUTING.md).** Lo esencial:
+
+1. Crea una rama nueva desde `develop` con el formato `tipo/descripcion` (`feat/…`, `fix/…`, `docs/…`, `i18n/…`).
+2. Abre el pull request **contra `develop`**. `main` solo recibe versiones publicadas.
+3. Antes de enviarlo: `flutter analyze` sin avisos y `flutter test` en verde.
 
 ### Por dónde empezar
 
-Estas son las piezas pendientes con más impacto (detalle en [`docs/ARCHITECTURE.md §7`](docs/ARCHITECTURE.md)):
-
-- **Plugin nativo de Vosk para Android** (Kotlin). El de Linux ya está en `linux/runner/vosk_stt_plugin.cc` y sirve de referencia; el contrato del canal `promptflow/stt` está en `ARCHITECTURE.md §5`.
+- **Plugin nativo de Vosk para Android** (Kotlin). El de Linux, en `linux/runner/vosk_stt_plugin.cc`, sirve de referencia, y el contrato del canal `promptflow/stt` está en [`docs/ARCHITECTURE.md §5`](docs/ARCHITECTURE.md).
 - **Rol `follower`**: un segundo dispositivo que muestre el guion siguiendo al prompter principal.
 - **Pantalla siempre encendida** durante la lectura (`wakelock_plus`).
-- **Empaquetado**: Flatpak / AppImage para Linux y builds de Android.
+- **Empaquetado**: Flatpak o AppImage para Linux y builds de Android.
 - **Pruebas en dispositivos reales**: pedales Bluetooth, tablets, Raspberry Pi (ARM64) y redes Wi‑Fi con aislamiento.
 
-¿Encontraste un bug o tienes una idea? Abre un [issue](https://github.com/GNUXDAR/PromptFlow/issues).
-
-### Flujo de trabajo
-
-1. Haz un fork y crea una rama desde `main` (`feat/…`, `fix/…`, `docs/…`).
-2. Antes de abrir el PR, verifica que todo pase:
-   ```bash
-   flutter analyze   # sin avisos
-   flutter test      # todos los tests en verde
-   ```
-3. Añade tests para la lógica nueva (motor, parser, protocolo o voz).
-4. Abre un Pull Request explicando qué cambia y por qué; si toca la interfaz, incluye una captura.
-
-### Convenciones
-
-- Respeta las capas de [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md): `domain/` no depende de Flutter widgets, sockets ni ficheros.
-- Toda acción de control es un `PrompterCommand` y pasa por `PrompterController.execute`.
-- Si cambias el protocolo, actualiza [`docs/PROTOCOL.md`](docs/PROTOCOL.md) y sube `v` si rompe compatibilidad.
-- Nada en el bucle de animación debe reconstruir widgets por frame.
+¿Encontraste un bug o tienes una idea? Abre un [issue](https://github.com/GNUXDAR/PromptFlow/issues/new/choose).
 
 ## Licencia
 
