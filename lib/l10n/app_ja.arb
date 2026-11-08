@@ -105,5 +105,17 @@
   "remoteFollowVoice": "音声追従",
   "remoteStart": "先頭へ",
   "remoteSections": "セクションとキュー",
-  "remoteChangeScript": "原稿を変更"
+  "remoteChangeScript": "原稿を変更",
+  "aboutTitle": "このアプリについて",
+  "aboutVersion": "バージョン {version}",
+  "aboutTagline": "Linux と Android 向けのプロンプター：滑らかなスクロール、ローカルネットワーク経由のリモコン、オフラインの音声追従。",
+  "aboutCreatedBy": "作者",
+  "aboutFollow": "フォロー",
+  "aboutProject": "プロジェクト",
+  "aboutSourceCode": "ソースコード",
+  "aboutContribute": "コントリビュート",
+  "aboutLicense": "MIT ライセンス",
+  "aboutVoiceCredit": "オフライン音声認識：Vosk（Apache 2.0）",
+  "aboutLicenses": "オープンソースライセンス",
+  "aboutOpenFailed": "{url} を開けませんでした"
 }

@@ -105,5 +105,17 @@
   "remoteFollowVoice": "Segui la voce",
   "remoteStart": "Inizio",
   "remoteSections": "Sezioni e cue",
-  "remoteChangeScript": "Cambia copione"
+  "remoteChangeScript": "Cambia copione",
+  "aboutTitle": "Informazioni",
+  "aboutVersion": "Versione {version}",
+  "aboutTagline": "Gobbo elettronico per Linux e Android: scorrimento fluido, telecomando sulla rete locale e inseguimento vocale offline.",
+  "aboutCreatedBy": "Creato da",
+  "aboutFollow": "Seguimi",
+  "aboutProject": "Progetto",
+  "aboutSourceCode": "Codice sorgente",
+  "aboutContribute": "Contribuisci",
+  "aboutLicense": "Licenza MIT",
+  "aboutVoiceCredit": "Riconoscimento vocale offline: Vosk (Apache 2.0)",
+  "aboutLicenses": "Licenze open source",
+  "aboutOpenFailed": "Impossibile aprire {url}"
 }

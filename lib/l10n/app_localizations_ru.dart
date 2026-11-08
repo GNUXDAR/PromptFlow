@@ -384,4 +384,46 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get remoteChangeScript => 'Сменить сценарий';
+
+  @override
+  String get aboutTitle => 'О приложении';
+
+  @override
+  String aboutVersion(String version) {
+    return 'Версия $version';
+  }
+
+  @override
+  String get aboutTagline =>
+      'Суфлёр для Linux и Android: плавная прокрутка, пульт по локальной сети и слежение за голосом без интернета.';
+
+  @override
+  String get aboutCreatedBy => 'Автор';
+
+  @override
+  String get aboutFollow => 'Подписаться';
+
+  @override
+  String get aboutProject => 'Проект';
+
+  @override
+  String get aboutSourceCode => 'Исходный код';
+
+  @override
+  String get aboutContribute => 'Участвовать';
+
+  @override
+  String get aboutLicense => 'Лицензия MIT';
+
+  @override
+  String get aboutVoiceCredit =>
+      'Распознавание речи без интернета: Vosk (Apache 2.0)';
+
+  @override
+  String get aboutLicenses => 'Лицензии открытого ПО';
+
+  @override
+  String aboutOpenFailed(String url) {
+    return 'Не удалось открыть $url';
+  }
 }

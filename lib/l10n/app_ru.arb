@@ -105,5 +105,17 @@
   "remoteFollowVoice": "Следовать за голосом",
   "remoteStart": "В начало",
   "remoteSections": "Разделы и метки CUE",
-  "remoteChangeScript": "Сменить сценарий"
+  "remoteChangeScript": "Сменить сценарий",
+  "aboutTitle": "О приложении",
+  "aboutVersion": "Версия {version}",
+  "aboutTagline": "Суфлёр для Linux и Android: плавная прокрутка, пульт по локальной сети и слежение за голосом без интернета.",
+  "aboutCreatedBy": "Автор",
+  "aboutFollow": "Подписаться",
+  "aboutProject": "Проект",
+  "aboutSourceCode": "Исходный код",
+  "aboutContribute": "Участвовать",
+  "aboutLicense": "Лицензия MIT",
+  "aboutVoiceCredit": "Распознавание речи без интернета: Vosk (Apache 2.0)",
+  "aboutLicenses": "Лицензии открытого ПО",
+  "aboutOpenFailed": "Не удалось открыть {url}"
 }

@@ -382,4 +382,46 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get remoteChangeScript => 'Trocar roteiro';
+
+  @override
+  String get aboutTitle => 'Sobre';
+
+  @override
+  String aboutVersion(String version) {
+    return 'Versão $version';
+  }
+
+  @override
+  String get aboutTagline =>
+      'Teleprompter para Linux e Android: rolagem suave, controle remoto pela rede local e acompanhamento de voz offline.';
+
+  @override
+  String get aboutCreatedBy => 'Criado por';
+
+  @override
+  String get aboutFollow => 'Siga';
+
+  @override
+  String get aboutProject => 'Projeto';
+
+  @override
+  String get aboutSourceCode => 'Código-fonte';
+
+  @override
+  String get aboutContribute => 'Contribuir';
+
+  @override
+  String get aboutLicense => 'Licença MIT';
+
+  @override
+  String get aboutVoiceCredit =>
+      'Reconhecimento de voz offline: Vosk (Apache 2.0)';
+
+  @override
+  String get aboutLicenses => 'Licenças de código aberto';
+
+  @override
+  String aboutOpenFailed(String url) {
+    return 'Não foi possível abrir $url';
+  }
 }

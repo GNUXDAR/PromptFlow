@@ -378,4 +378,45 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get remoteChangeScript => '原稿を変更';
+
+  @override
+  String get aboutTitle => 'このアプリについて';
+
+  @override
+  String aboutVersion(String version) {
+    return 'バージョン $version';
+  }
+
+  @override
+  String get aboutTagline =>
+      'Linux と Android 向けのプロンプター：滑らかなスクロール、ローカルネットワーク経由のリモコン、オフラインの音声追従。';
+
+  @override
+  String get aboutCreatedBy => '作者';
+
+  @override
+  String get aboutFollow => 'フォロー';
+
+  @override
+  String get aboutProject => 'プロジェクト';
+
+  @override
+  String get aboutSourceCode => 'ソースコード';
+
+  @override
+  String get aboutContribute => 'コントリビュート';
+
+  @override
+  String get aboutLicense => 'MIT ライセンス';
+
+  @override
+  String get aboutVoiceCredit => 'オフライン音声認識：Vosk（Apache 2.0）';
+
+  @override
+  String get aboutLicenses => 'オープンソースライセンス';
+
+  @override
+  String aboutOpenFailed(String url) {
+    return '$url を開けませんでした';
+  }
 }

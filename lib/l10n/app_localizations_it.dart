@@ -382,4 +382,46 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get remoteChangeScript => 'Cambia copione';
+
+  @override
+  String get aboutTitle => 'Informazioni';
+
+  @override
+  String aboutVersion(String version) {
+    return 'Versione $version';
+  }
+
+  @override
+  String get aboutTagline =>
+      'Gobbo elettronico per Linux e Android: scorrimento fluido, telecomando sulla rete locale e inseguimento vocale offline.';
+
+  @override
+  String get aboutCreatedBy => 'Creato da';
+
+  @override
+  String get aboutFollow => 'Seguimi';
+
+  @override
+  String get aboutProject => 'Progetto';
+
+  @override
+  String get aboutSourceCode => 'Codice sorgente';
+
+  @override
+  String get aboutContribute => 'Contribuisci';
+
+  @override
+  String get aboutLicense => 'Licenza MIT';
+
+  @override
+  String get aboutVoiceCredit =>
+      'Riconoscimento vocale offline: Vosk (Apache 2.0)';
+
+  @override
+  String get aboutLicenses => 'Licenze open source';
+
+  @override
+  String aboutOpenFailed(String url) {
+    return 'Impossibile aprire $url';
+  }
 }

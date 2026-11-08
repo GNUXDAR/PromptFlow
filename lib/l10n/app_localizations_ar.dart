@@ -384,4 +384,46 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get remoteChangeScript => 'تغيير النص';
+
+  @override
+  String get aboutTitle => 'حول التطبيق';
+
+  @override
+  String aboutVersion(String version) {
+    return 'الإصدار $version';
+  }
+
+  @override
+  String get aboutTagline =>
+      'جهاز تلقين لنظامي Linux وAndroid: تمرير سلس، وتحكم عن بُعد عبر الشبكة المحلية، وتتبّع صوتي دون اتصال.';
+
+  @override
+  String get aboutCreatedBy => 'من إنشاء';
+
+  @override
+  String get aboutFollow => 'تابعني';
+
+  @override
+  String get aboutProject => 'المشروع';
+
+  @override
+  String get aboutSourceCode => 'الشيفرة المصدرية';
+
+  @override
+  String get aboutContribute => 'ساهم';
+
+  @override
+  String get aboutLicense => 'رخصة MIT';
+
+  @override
+  String get aboutVoiceCredit =>
+      'التعرّف على الكلام دون اتصال: Vosk (Apache 2.0)';
+
+  @override
+  String get aboutLicenses => 'تراخيص البرمجيات مفتوحة المصدر';
+
+  @override
+  String aboutOpenFailed(String url) {
+    return 'تعذّر فتح $url';
+  }
 }

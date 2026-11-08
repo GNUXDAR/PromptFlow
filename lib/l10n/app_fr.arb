@@ -105,5 +105,17 @@
   "remoteFollowVoice": "Suivre la voix",
   "remoteStart": "Début",
   "remoteSections": "Sections et cues",
-  "remoteChangeScript": "Changer de script"
+  "remoteChangeScript": "Changer de script",
+  "aboutTitle": "À propos",
+  "aboutVersion": "Version {version}",
+  "aboutTagline": "Prompteur pour Linux et Android : défilement fluide, télécommande sur le réseau local et suivi vocal hors ligne.",
+  "aboutCreatedBy": "Créé par",
+  "aboutFollow": "Suivre",
+  "aboutProject": "Projet",
+  "aboutSourceCode": "Code source",
+  "aboutContribute": "Contribuer",
+  "aboutLicense": "Licence MIT",
+  "aboutVoiceCredit": "Reconnaissance vocale hors ligne : Vosk (Apache 2.0)",
+  "aboutLicenses": "Licences open source",
+  "aboutOpenFailed": "Impossible d'ouvrir {url}"
 }

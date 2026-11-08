@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../data/repositories/script_repository.dart';
 import '../l10n.dart';
+import 'about_screen.dart';
 import 'editor_screen.dart';
 import 'prompter_screen.dart';
 import 'remote_screen.dart';
@@ -72,6 +73,12 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text(context.l10n.appTitle),
         actions: [
           IconButton(tooltip: context.l10n.homeImport, onPressed: _import, icon: const Icon(Icons.file_open)),
+          IconButton(
+            tooltip: context.l10n.aboutTitle,
+            onPressed: () =>
+                Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const AboutScreen())),
+            icon: const Icon(Icons.info_outline),
+          ),
           IconButton(
             tooltip: context.l10n.homeRemote,
             onPressed: () => Navigator.of(context)
