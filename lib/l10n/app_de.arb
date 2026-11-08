@@ -73,6 +73,7 @@
   "voiceStatusNoEngine": "Modell installiert, aber die Vosk-Engine fehlt (unter Linux: tool/setup_vosk_linux.sh)",
   "voiceStatusNoModel": "Modell nicht installiert ({size} MB, einmaliger Download)",
   "voiceDownload": "Modell herunterladen ({size} MB)",
+  "voiceDownloadPrompt": "Die Sprachverfolgung braucht das Sprachmodell für {language} ({size} MB). Es wird einmal heruntergeladen und funktioniert danach offline. Die Sprache kannst du unter Einstellungen → Sprache ändern.",
   "voiceErrorNoModel": "Lade das Sprachmodell unter Einstellungen → Sprache herunter",
   "voiceErrorNoEngine": "Vosk ist nicht installiert (tool/setup_vosk_linux.sh)",
   "voiceErrorPermission": "Mikrofonzugriff verweigert. Erlaube ihn in den Systemeinstellungen, um die Sprachverfolgung zu nutzen.",

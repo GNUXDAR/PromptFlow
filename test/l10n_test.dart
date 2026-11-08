@@ -42,6 +42,7 @@ void main() {
         }
         expect(l.editorCueSnippet, startsWith('[CUE '));
         expect(l.aboutVersion('1.2.3'), contains('1.2.3'));
+        expect(l.voiceDownloadPrompt('Español', 38), allOf(contains('Español'), contains('38')));
         expect(l.aboutOpenFailed('https://x.y'), contains('https://x.y'));
         expect(l.editorSection, startsWith('## '));
       });

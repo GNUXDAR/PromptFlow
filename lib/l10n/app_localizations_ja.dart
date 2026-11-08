@@ -268,6 +268,11 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String voiceDownloadPrompt(String language, int size) {
+    return '音声追従には$languageの音声モデル（$size MB）が必要です。ダウンロードは一度だけで、その後はオフラインで動作します。言語は「設定 → 音声」で変更できます。';
+  }
+
+  @override
   String get voiceErrorNoModel => '「設定 → 音声」で音声モデルをダウンロードしてください';
 
   @override

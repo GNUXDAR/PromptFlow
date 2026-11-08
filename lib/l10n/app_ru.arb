@@ -73,6 +73,7 @@
   "voiceStatusNoEngine": "Модель установлена, но нет движка Vosk (в Linux: tool/setup_vosk_linux.sh)",
   "voiceStatusNoModel": "Модель не установлена ({size} МБ, загружается один раз)",
   "voiceDownload": "Скачать модель ({size} МБ)",
+  "voiceDownloadPrompt": "Для слежения за голосом нужна голосовая модель: {language} ({size} МБ). Она скачивается один раз и потом работает без интернета. Язык можно изменить в разделе Настройки → Голос.",
   "voiceErrorNoModel": "Скачайте голосовую модель в разделе Настройки → Голос",
   "voiceErrorNoEngine": "Vosk не установлен (tool/setup_vosk_linux.sh)",
   "voiceErrorPermission": "Нет доступа к микрофону. Разрешите его в настройках системы, чтобы использовать слежение за голосом.",

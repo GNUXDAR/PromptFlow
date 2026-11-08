@@ -268,6 +268,11 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String voiceDownloadPrompt(String language, int size) {
+    return '语音跟随需要$language语音模型（$size MB）。只需下载一次，之后可离线使用。可在“设置 → 语音”中更改语言。';
+  }
+
+  @override
   String get voiceErrorNoModel => '请在“设置 → 语音”中下载语音模型';
 
   @override

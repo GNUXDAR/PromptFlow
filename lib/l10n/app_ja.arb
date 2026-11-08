@@ -73,6 +73,7 @@
   "voiceStatusNoEngine": "モデルはインストール済みですが、Vosk エンジンがありません（Linux: tool/setup_vosk_linux.sh）",
   "voiceStatusNoModel": "モデル未インストール（{size} MB、ダウンロードは初回のみ）",
   "voiceDownload": "モデルをダウンロード（{size} MB）",
+  "voiceDownloadPrompt": "音声追従には{language}の音声モデル（{size} MB）が必要です。ダウンロードは一度だけで、その後はオフラインで動作します。言語は「設定 → 音声」で変更できます。",
   "voiceErrorNoModel": "「設定 → 音声」で音声モデルをダウンロードしてください",
   "voiceErrorNoEngine": "Vosk がインストールされていません（tool/setup_vosk_linux.sh）",
   "voiceErrorPermission": "マイクの権限が拒否されました。音声追従を使うには、システム設定で許可してください。",

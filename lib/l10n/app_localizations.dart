@@ -556,6 +556,12 @@ abstract class AppLocalizations {
   /// **'Download model ({size} MB)'**
   String voiceDownload(int size);
 
+  /// Shown when the user taps the microphone and the speech model is missing. {language} is the language name in its own language (e.g. Español).
+  ///
+  /// In en, this message translates to:
+  /// **'Voice following needs the {language} speech model ({size} MB). It is downloaded once and then works offline. You can change the language in Settings → Voice.'**
+  String voiceDownloadPrompt(String language, int size);
+
   /// No description provided for @voiceErrorNoModel.
   ///
   /// In en, this message translates to:

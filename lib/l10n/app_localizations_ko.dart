@@ -268,6 +268,11 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
+  String voiceDownloadPrompt(String language, int size) {
+    return '음성 추적에는 $language 음성 모델(${size}MB)이 필요합니다. 한 번만 다운로드하면 이후에는 오프라인으로 작동합니다. 언어는 설정 → 음성에서 바꿀 수 있습니다.';
+  }
+
+  @override
   String get voiceErrorNoModel => '설정 → 음성에서 음성 모델을 다운로드하세요';
 
   @override

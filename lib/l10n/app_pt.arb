@@ -73,6 +73,7 @@
   "voiceStatusNoEngine": "Modelo instalado, mas falta o mecanismo Vosk (no Linux: tool/setup_vosk_linux.sh)",
   "voiceStatusNoModel": "Modelo não instalado ({size} MB, baixado só uma vez)",
   "voiceDownload": "Baixar modelo ({size} MB)",
+  "voiceDownloadPrompt": "O acompanhamento de voz precisa do modelo de voz em {language} ({size} MB). Ele é baixado uma única vez e depois funciona offline. Você pode mudar o idioma em Configurações → Voz.",
   "voiceErrorNoModel": "Baixe o modelo de voz em Configurações → Voz",
   "voiceErrorNoEngine": "O Vosk não está instalado (tool/setup_vosk_linux.sh)",
   "voiceErrorPermission": "Permissão de microfone negada. Ative-a nas configurações do sistema para usar o acompanhamento de voz.",

@@ -270,6 +270,11 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String voiceDownloadPrompt(String language, int size) {
+    return 'L\'inseguimento vocale richiede il modello vocale $language ($size MB). Si scarica una sola volta e poi funziona offline. Puoi cambiare la lingua in Impostazioni → Voce.';
+  }
+
+  @override
   String get voiceErrorNoModel =>
       'Scarica il modello vocale in Impostazioni → Voce';
 
