@@ -100,6 +100,14 @@ install(FILES "${FLUTTER_ICU_DATA_FILE}" DESTINATION "${INSTALL_BUNDLE_DATA_DIR}
 install(FILES "${FLUTTER_LIBRARY}" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
   COMPONENT Runtime)
 
+# Vosk (opcional): tool/setup_vosk_linux.sh la descarga en linux/third_party/vosk.
+set(VOSK_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/third_party/vosk/libvosk.so")
+if(EXISTS "${VOSK_LIBRARY}")
+  install(FILES "${VOSK_LIBRARY}" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}" COMPONENT Runtime)
+else()
+  message(STATUS "libvosk.so no encontrada: el seguimiento por voz quedará desactivado")
+endif()
+
 foreach(bundled_library ${PLUGIN_BUNDLED_LIBRARIES})
   install(FILES "${bundled_library}"
     DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"

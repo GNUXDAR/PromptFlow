@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
@@ -13,24 +14,26 @@ final class RecognizedSpeech {
 /// Abstracción del motor STT local (Módulo D). El dominio solo conoce esta
 /// interfaz; la implementación nativa se elige por plataforma.
 abstract interface class SpeechRecognizer {
-  Future<bool> get isAvailable;
+  /// Librería nativa, audio y modelo presentes.
+  Future<bool> isAvailable({required String modelPath});
 
-  /// Carga el modelo (p. ej. `vosk-model-small-es-0.42`, ~40 MB) y abre el micro.
-  Future<void> start({required String modelPath, String? grammarHint});
+  /// Carga el modelo (p. ej. `vosk-model-small-es-0.42`, ~40 MB) y abre el
+  /// micro. Resuelve cuando ya se está escuchando; lanza si algo falla.
+  /// [grammar]: lista JSON de palabras permitidas (`["hola", …, "[unk]"]`).
+  Future<void> start({required String modelPath, String? grammar});
   Future<void> stop();
   Stream<RecognizedSpeech> get results;
 }
 
 /// Puente a Vosk vía platform channels.
 ///
-/// * **Android**: plugin Kotlin con `org.vosk.android.SpeechService`
-///   (AudioRecord 16 kHz mono, VAD interno de Kaldi).
-/// * **Linux**: plugin C++ que enlaza `libvosk.so` y captura con PipeWire/Pulse.
+/// * **Linux**: `linux/runner/vosk_stt_plugin.cc` (libvosk + PulseAudio/PipeWire
+///   cargadas con dlopen). Implementado.
+/// * **Android**: plugin Kotlin con `org.vosk.android.SpeechService`. Pendiente.
 ///
-/// Ambos publican `{"text": "...", "final": bool}` en el EventChannel.
-/// El lado nativo está especificado en `docs/ARCHITECTURE.md §5` y **no está
-/// incluido en este esqueleto**: sin él, [isAvailable] devuelve `false` y la
-/// UI oculta el modo voz.
+/// El lado nativo publica `{"raw": "<json de Vosk>", "final": bool}`; Vosk
+/// devuelve `{"partial": "..."}` en parciales y `{"text": "..."}` en finales.
+/// Sin plugin, [isAvailable] devuelve `false` y la UI oculta el modo voz.
 class VoskSpeechRecognizer implements SpeechRecognizer {
   static const _method = MethodChannel('promptflow/stt');
   static const _events = EventChannel('promptflow/stt/events');
@@ -38,9 +41,9 @@ class VoskSpeechRecognizer implements SpeechRecognizer {
   Stream<RecognizedSpeech>? _stream;
 
   @override
-  Future<bool> get isAvailable async {
+  Future<bool> isAvailable({required String modelPath}) async {
     try {
-      return await _method.invokeMethod<bool>('isAvailable') ?? false;
+      return await _method.invokeMethod<bool>('isAvailable', {'modelPath': modelPath}) ?? false;
     } on MissingPluginException {
       return false;
     } on PlatformException {
@@ -49,15 +52,26 @@ class VoskSpeechRecognizer implements SpeechRecognizer {
   }
 
   @override
-  Future<void> start({required String modelPath, String? grammarHint}) =>
-      _method.invokeMethod('start', {'modelPath': modelPath, 'grammar': grammarHint});
+  Future<void> start({required String modelPath, String? grammar}) =>
+      _method.invokeMethod('start', {'modelPath': modelPath, 'grammar': ?grammar});
 
   @override
   Future<void> stop() => _method.invokeMethod('stop');
 
   @override
-  Stream<RecognizedSpeech> get results => _stream ??= _events.receiveBroadcastStream().map((e) {
-        final m = (e as Map).cast<String, Object?>();
-        return RecognizedSpeech(m['text'] as String? ?? '', isFinal: m['final'] == true);
-      });
+  Stream<RecognizedSpeech> get results =>
+      _stream ??= _events.receiveBroadcastStream().map(parseEvent).where((r) => r.text.isNotEmpty);
+
+  /// Convierte un evento del canal en [RecognizedSpeech].
+  static RecognizedSpeech parseEvent(Object? event) {
+    final m = (event as Map).cast<String, Object?>();
+    final isFinal = m['final'] == true;
+    var text = m['text'] as String? ?? '';
+    final raw = m['raw'];
+    if (raw is String && raw.isNotEmpty) {
+      final j = jsonDecode(raw);
+      if (j is Map) text = (j['text'] ?? j['partial'] ?? '') as String;
+    }
+    return RecognizedSpeech(text.trim(), isFinal: isFinal);
+  }
 }

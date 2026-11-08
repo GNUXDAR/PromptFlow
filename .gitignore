@@ -46,3 +46,6 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Vosk: binarios y modelos se descargan con tool/setup_vosk_linux.sh
+/linux/third_party/
