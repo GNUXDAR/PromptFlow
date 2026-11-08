@@ -104,7 +104,7 @@ final class Script {
 
   late final int wordCount = blocks.fold(0, (a, b) => a + b.wordCount);
 
-  /// Palabras leíbles en orden; el índice coincide con `ScriptLayout.wordCenters`.
+  /// Palabras leíbles en orden; el índice coincide con `ScriptLayout.wordOffsets`.
   late final List<String> readableWords = [
     for (final b in blocks)
       if (b.kind != BlockKind.heading)

@@ -37,25 +37,29 @@ final class LaidOutBlock {
 /// protocolo (posición en palabras, independiente del dispositivo) y la
 /// sincronización por voz.
 final class ScriptLayout {
-  ScriptLayout._(this.blocks, this.markers, this.wordCenters, this.contentHeight, this.width);
+  ScriptLayout._(this.blocks, this.markers, this.wordOffsets, this.contentHeight, this.width);
 
   final List<LaidOutBlock> blocks;
 
   /// Ordenados por `y` ascendente.
   final List<LayoutMarker> markers;
 
-  /// Centro vertical de la línea de cada palabra leíble (índice global).
-  final Float64List wordCenters;
+  /// Desplazamiento que pone cada palabra leíble (índice global) en la línea
+  /// de enfoque. **Estrictamente creciente**: dentro de una línea las palabras
+  /// se reparten entre el centro de su línea y el de la siguiente, así el
+  /// texto avanza de forma continua palabra a palabra y no a saltos de línea
+  /// (clave para el seguimiento por voz y para el scrubbing).
+  final Float64List wordOffsets;
   final double contentHeight;
   final double width;
 
-  int get wordCount => wordCenters.length;
+  int get wordCount => wordOffsets.length;
 
   /// Desplazamiento inicial: la primera línea centrada en la línea de enfoque.
-  double get minOffset => wordCenters.isEmpty ? 0 : wordCenters.first;
+  double get minOffset => wordOffsets.isEmpty ? 0 : wordOffsets.first;
 
   /// Desplazamiento final: la última línea en la línea de enfoque.
-  double get maxOffset => wordCenters.isEmpty ? contentHeight : wordCenters.last;
+  double get maxOffset => wordOffsets.isEmpty ? contentHeight : wordOffsets.last;
 
   /// Píxeles de contenido por palabra (promedio). Convierte WPM ↔ px/s.
   double get pxPerWord =>
@@ -73,7 +77,11 @@ final class ScriptLayout {
 
     final blocks = <LaidOutBlock>[];
     final markers = <LayoutMarker>[];
-    final centers = <double>[];
+    final centers = <double>[]; // centro de la línea de cada palabra
+    final lineHeights = <double>[];
+    // Marcas resueltas al final, cuando ya se conocen todas las posiciones:
+    // (índice de la primera palabra tras la marca, constructor).
+    final pendingMarkers = <(int, LayoutMarker Function(double))>[];
     var y = 0.0;
 
     for (final block in script.blocks) {
@@ -139,31 +147,56 @@ final class ScriptLayout {
         textScaler: textScaler,
       )..layout(maxWidth: width);
 
-      double centerAt(int offset) {
-        final caret = painter.getOffsetForCaret(TextPosition(offset: offset), Rect.zero);
-        final h = painter.getFullHeightForCaret(TextPosition(offset: offset), Rect.zero);
-        return y + caret.dy + h / 2;
-      }
-
+      final firstWord = centers.length;
       for (final o in wordOffsets) {
-        centers.add(centerAt(o));
+        final caret = painter.getOffsetForCaret(TextPosition(offset: o), Rect.zero);
+        final h = painter.getFullHeightForCaret(TextPosition(offset: o), Rect.zero);
+        centers.add(y + caret.dy + h / 2);
+        lineHeights.add(h);
       }
-      for (final (offset, make) in pending) {
-        markers.add(make(centerAt(offset)));
+      // Una marca se activa al llegar a la primera palabra que la sigue:
+      // p. ej. una pausa salta justo después de leer la palabra anterior.
+      for (final (charOffset, make) in pending) {
+        final before = wordOffsets.where((o) => o < charOffset).length;
+        pendingMarkers.add((firstWord + before, make));
       }
 
       blocks.add(LaidOutBlock(painter, y));
       y += painter.height + (heading ? lineH * 0.4 : lineH * 0.6);
     }
 
+    final offsets = _continuousOffsets(centers, lineHeights);
+    for (final (index, make) in pendingMarkers) {
+      markers.add(make(offsets.isEmpty ? 0 : offsets[index.clamp(0, offsets.length - 1)]));
+    }
     markers.sort((a, b) => a.y.compareTo(b.y));
-    return ScriptLayout._(blocks, markers, Float64List.fromList(centers), y, width);
+    return ScriptLayout._(blocks, markers, offsets, y, width);
+  }
+
+  /// Reparte las palabras de cada línea entre el centro de su línea y el de
+  /// la siguiente (o una línea más abajo si es la última).
+  static Float64List _continuousOffsets(List<double> centers, List<double> lineHeights) {
+    final out = Float64List(centers.length);
+    var a = 0;
+    while (a < centers.length) {
+      var b = a;
+      while (b + 1 < centers.length && centers[b + 1] == centers[a]) {
+        b++;
+      }
+      final n = b - a + 1;
+      final next = b + 1 < centers.length ? centers[b + 1] : centers[a] + lineHeights[a];
+      for (var i = a; i <= b; i++) {
+        out[i] = centers[a] + (next - centers[a]) * (i - a) / n;
+      }
+      a = b + 1;
+    }
+    return out;
   }
 
   /// Índice de palabra (fraccional) en la línea de enfoque para [offset].
   /// Es la unidad de posición del protocolo de red.
   double wordAt(double offset) {
-    final c = wordCenters;
+    final c = wordOffsets;
     if (c.isEmpty) return 0;
     if (offset <= c.first) return 0;
     if (offset >= c.last) return (c.length - 1).toDouble();
@@ -176,16 +209,14 @@ final class ScriptLayout {
         hi = mid - 1;
       }
     }
-    // Palabras de la misma línea comparten centro: avanza hasta la última
-    // con ese centro e interpola hacia la siguiente línea.
     final next = lo + 1;
-    if (next >= c.length || c[next] == c[lo]) return lo.toDouble();
+    if (next >= c.length) return lo.toDouble();
     return lo + (offset - c[lo]) / (c[next] - c[lo]);
   }
 
   /// Desplazamiento que pone la palabra [word] (puede ser fraccional) en foco.
   double offsetForWord(double word) {
-    final c = wordCenters;
+    final c = wordOffsets;
     if (c.isEmpty) return 0;
     final w = word.clamp(0, c.length - 1).toDouble();
     final i = w.floor();

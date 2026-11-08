@@ -14,7 +14,12 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:promptflow/data/parsing/script_parser.dart';
+import 'package:promptflow/domain/entities/prompter_settings.dart';
+import 'package:promptflow/engine/script_layout.dart';
+import 'package:promptflow/engine/scroll_engine.dart';
 import 'package:promptflow/voice/speech_recognizer.dart';
+import 'package:promptflow/voice/voice_aligner.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -89,4 +94,51 @@ void main() {
       print('stop() en ${sw.elapsedMilliseconds} ms');
     });
   }, skip: model == null || env['PROMPTFLOW_STT_WAV'] != null);
+
+  // Cadena completa con audio real: Vosk (WAV a ritmo real) → VoiceAligner →
+  // ScrollEngine. El guion es la transcripción del WAV de ejemplo de Vosk
+  // (muchas palabras repetidas: caso difícil para el alineador).
+  testWidgets('seguimiento por voz de punta a punta con audio real', (tester) async {
+    const transcript = 'one zero zero zero one nine oh two one oh zero one eight zero three';
+    final script = ScriptParser.parse(transcript, id: 'wav');
+    final layout = ScriptLayout.build(script, const PrompterSettings(fontSize: 48), 600);
+    final engine = ScrollEngine.manual()
+      ..setLayout(layout)
+      ..setWpm(150)
+      ..setMode(ScrollMode.voiceFollow);
+    final aligner = VoiceAligner(script.readableWords);
+    final stt = VoskSpeechRecognizer();
+    final positions = <double>[];
+    var updates = 0;
+    final sub = stt.results.listen((r) {
+      final idx = aligner.feed(r.text);
+      if (idx != null) {
+        updates++;
+        engine.followWord(idx.toDouble());
+      }
+    });
+    await tester.runAsync(() async {
+      final grammar = '[${{...script.readableWords}.map((w) => '"$w"').join(', ')}, "[unk]"]';
+      await stt.start(modelPath: model!, grammar: grammar);
+      final sw = Stopwatch()..start();
+      var last = Duration.zero;
+      while (sw.elapsed < const Duration(seconds: 10)) {
+        await Future<void>.delayed(const Duration(milliseconds: 16));
+        engine.advance(sw.elapsed - last);
+        last = sw.elapsed;
+        positions.add(engine.wordPosition);
+      }
+      await stt.stop();
+    });
+    await sub.cancel();
+    var back = 0.0;
+    for (var i = 1; i < positions.length; i++) {
+      back = back > positions[i - 1] - positions[i] ? back : positions[i - 1] - positions[i];
+    }
+    // ignore: avoid_print
+    print('Audio real: $updates alineaciones · posición final ${engine.wordPosition.toStringAsFixed(1)} '
+        'de ${layout.wordCount - 1} · retroceso máx ${back.toStringAsFixed(2)} palabras');
+    expect(engine.wordPosition, greaterThan(layout.wordCount - 3), reason: 'llega al final del guion');
+    expect(back, lessThan(0.5), reason: 'no retrocede');
+  }, skip: skip != null);
 }
