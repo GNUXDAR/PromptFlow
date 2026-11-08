@@ -237,6 +237,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsFocusGuide => '포커스 라인 가이드';
 
   @override
+  String get settingsHighlightSpoken => '말한 부분 강조 (음성)';
+
+  @override
   String get voiceTitle => '음성 따라가기';
 
   @override

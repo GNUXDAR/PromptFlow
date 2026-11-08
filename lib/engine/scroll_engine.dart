@@ -211,16 +211,22 @@ class ScrollEngine extends ChangeNotifier {
 
   void setMode(ScrollMode mode) {
     _mode = mode;
+    _spokenWord = null;
     _followTarget = null;
     _followRate = 0;
     _lastFollowAt = null;
     _bump();
   }
 
+  /// Última palabra reconocida en modo voz (para resaltarla). `null` si no hay.
+  int? get spokenWord => _mode == ScrollMode.voiceFollow ? _spokenWord : null;
+  int? _spokenWord;
+
   /// Entrada del sincronizador de voz: palabra que el usuario está diciendo.
   void followWord(double word) {
     final l = _layout;
     if (l == null || _mode != ScrollMode.voiceFollow) return;
+    _spokenWord = word.round();
     final target = l.offsetForWord(word);
     // Feed-forward: velocidad del habla estimada entre reconocimientos (EMA).
     // Sin ella, un control solo proporcional va siempre por detrás (v/K s).

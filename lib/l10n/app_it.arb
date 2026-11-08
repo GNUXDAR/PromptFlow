@@ -65,6 +65,7 @@
   "settingsMirrorH": "Specchio orizzontale (H)",
   "settingsMirrorV": "Specchio verticale (V)",
   "settingsFocusGuide": "Guida della linea di lettura",
+  "settingsHighlightSpoken": "Evidenzia ciò che dico (voce)",
   "voiceTitle": "Inseguimento vocale",
   "voiceLanguage": "Lingua della voce",
   "voiceStatusDownloading": "Download {percent} %",

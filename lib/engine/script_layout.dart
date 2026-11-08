@@ -37,7 +37,50 @@ final class LaidOutBlock {
 /// protocolo (posición en palabras, independiente del dispositivo) y la
 /// sincronización por voz.
 final class ScriptLayout {
-  ScriptLayout._(this.blocks, this.markers, this.wordOffsets, this.contentHeight, this.width);
+  ScriptLayout._(
+    this.blocks,
+    this.markers,
+    this.wordOffsets,
+    this.contentHeight,
+    this.width,
+    this._wordBlock,
+    this._wordStart,
+    this._wordEnd,
+    this._wordLine,
+  );
+
+  // Ubicación de cada palabra leíble (índice global) para resaltarla:
+  // bloque, rango de caracteres dentro de su TextPainter y centro de línea.
+  final Int32List _wordBlock;
+  final Int32List _wordStart;
+  final Int32List _wordEnd;
+  final Float64List _wordLine;
+  final _boxCache = <int, List<Rect>>{};
+
+  /// Rectángulos (en coordenadas de contenido, sin el margen lateral) que
+  /// ocupa la palabra [index]. Más de uno si la palabra se parte en dos líneas.
+  List<Rect> wordRects(int index) {
+    if (index < 0 || index >= _wordBlock.length) return const [];
+    return _boxCache.putIfAbsent(index, () {
+      final b = blocks[_wordBlock[index]];
+      return [
+        for (final box in b.painter.getBoxesForSelection(
+          TextSelection(baseOffset: _wordStart[index], extentOffset: _wordEnd[index]),
+        ))
+          Rect.fromLTRB(box.left, box.top + b.top, box.right, box.bottom + b.top),
+      ];
+    });
+  }
+
+  /// Primera palabra de la línea en la que está [index].
+  int lineStartOf(int index) {
+    if (index < 0 || index >= _wordLine.length) return index;
+    var i = index;
+    while (i > 0 && _wordLine[i - 1] == _wordLine[index]) {
+      i--;
+    }
+    return i;
+  }
 
   final List<LaidOutBlock> blocks;
 
@@ -79,6 +122,7 @@ final class ScriptLayout {
     final markers = <LayoutMarker>[];
     final centers = <double>[]; // centro de la línea de cada palabra
     final lineHeights = <double>[];
+    final wordBlock = <int>[], wordStart = <int>[], wordEnd = <int>[];
     // Marcas resueltas al final, cuando ya se conocen todas las posiciones:
     // (índice de la primera palabra tras la marca, constructor).
     final pendingMarkers = <(int, LayoutMarker Function(double))>[];
@@ -87,6 +131,7 @@ final class ScriptLayout {
     for (final block in script.blocks) {
       final heading = block.kind == BlockKind.heading;
       final base = TextStyle(
+        fontFamily: s.fontFamily,
         color: heading ? PrompterPalette.dim : s.textColor,
         fontSize: heading ? s.fontSize * 0.6 : s.fontSize,
         height: s.lineHeight,
@@ -97,6 +142,7 @@ final class ScriptLayout {
       // Construye el TextSpan y anota offsets de carácter de palabras y marcas.
       final children = <InlineSpan>[];
       final wordOffsets = <int>[];
+      final wordEnds = <int>[];
       final pending = <(int, LayoutMarker Function(double))>[];
       var charPos = 0;
 
@@ -114,6 +160,7 @@ final class ScriptLayout {
             if (!heading) {
               for (final m in wordPattern.allMatches(span.text)) {
                 wordOffsets.add(charPos + m.start);
+                wordEnds.add(charPos + m.end);
               }
             }
             push(
@@ -148,6 +195,11 @@ final class ScriptLayout {
       )..layout(maxWidth: width);
 
       final firstWord = centers.length;
+      for (var k = 0; k < wordOffsets.length; k++) {
+        wordBlock.add(blocks.length);
+        wordStart.add(wordOffsets[k]);
+        wordEnd.add(wordEnds[k]);
+      }
       for (final o in wordOffsets) {
         final caret = painter.getOffsetForCaret(TextPosition(offset: o), Rect.zero);
         final h = painter.getFullHeightForCaret(TextPosition(offset: o), Rect.zero);
@@ -170,7 +222,17 @@ final class ScriptLayout {
       markers.add(make(offsets.isEmpty ? 0 : offsets[index.clamp(0, offsets.length - 1)]));
     }
     markers.sort((a, b) => a.y.compareTo(b.y));
-    return ScriptLayout._(blocks, markers, offsets, y, width);
+    return ScriptLayout._(
+      blocks,
+      markers,
+      offsets,
+      y,
+      width,
+      Int32List.fromList(wordBlock),
+      Int32List.fromList(wordStart),
+      Int32List.fromList(wordEnd),
+      Float64List.fromList(centers),
+    );
   }
 
   /// Reparte las palabras de cada línea entre el centro de su línea y el de

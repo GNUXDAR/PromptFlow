@@ -237,6 +237,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settingsFocusGuide => 'フォーカスラインのガイド';
 
   @override
+  String get settingsHighlightSpoken => '話した部分をハイライト（音声）';
+
+  @override
   String get voiceTitle => '音声追従';
 
   @override

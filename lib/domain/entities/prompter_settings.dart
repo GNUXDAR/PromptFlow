@@ -14,6 +14,8 @@ final class PrompterSettings {
     this.showFocusGuide = true,
     this.wpm = 140,
     this.voiceLanguage = 'es',
+    this.highlightSpoken = true,
+    this.fontFamily,
   });
 
   /// Tamaño en píxeles lógicos.
@@ -39,12 +41,21 @@ final class PrompterSettings {
   /// Idioma del modelo de voz (código de `VoiceModels`).
   final String voiceLanguage;
 
+  /// En modo voz, resalta la palabra dicha y subraya lo leído de la línea.
+  final bool highlightSpoken;
+
+  /// Familia tipográfica del guion; `null` = la del sistema.
+  final String? fontFamily;
+
   static const minWpm = 40.0;
   static const maxWpm = 400.0;
 
   /// ¿Cambia la maquetación (y por tanto las posiciones en px)?
   bool affectsLayout(PrompterSettings o) =>
-      o.fontSize != fontSize || o.lineHeight != lineHeight || o.horizontalMargin != horizontalMargin;
+      o.fontSize != fontSize ||
+      o.lineHeight != lineHeight ||
+      o.horizontalMargin != horizontalMargin ||
+      o.fontFamily != fontFamily;
 
   PrompterSettings copyWith({
     double? fontSize,
@@ -57,6 +68,8 @@ final class PrompterSettings {
     bool? showFocusGuide,
     double? wpm,
     String? voiceLanguage,
+    bool? highlightSpoken,
+    String? fontFamily,
   }) =>
       PrompterSettings(
         fontSize: (fontSize ?? this.fontSize).clamp(16, 240).toDouble(),
@@ -69,6 +82,8 @@ final class PrompterSettings {
         showFocusGuide: showFocusGuide ?? this.showFocusGuide,
         wpm: (wpm ?? this.wpm).clamp(minWpm, maxWpm).toDouble(),
         voiceLanguage: voiceLanguage ?? this.voiceLanguage,
+        highlightSpoken: highlightSpoken ?? this.highlightSpoken,
+        fontFamily: fontFamily ?? this.fontFamily,
       );
 }
 
@@ -84,5 +99,8 @@ abstract final class PrompterPalette {
   static const pause = Color(0xFFFF5C7A);
   static const cue = Color(0xFF7CFF8A);
   static const focusGuide = Color(0x33FFFFFF);
+
+  /// Azul neón de la marca GNUXDAR: resaltado de lo que se va diciendo.
+  static const spoken = Color(0xFF00E5FF);
   static const dim = Color(0xFF8A8A8A);
 }

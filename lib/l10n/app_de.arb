@@ -65,6 +65,7 @@
   "settingsMirrorH": "Horizontal spiegeln (H)",
   "settingsMirrorV": "Vertikal spiegeln (V)",
   "settingsFocusGuide": "Hilfslinie für Fokuszeile",
+  "settingsHighlightSpoken": "Gesprochenes hervorheben (Sprache)",
   "voiceTitle": "Sprachverfolgung",
   "voiceLanguage": "Sprache",
   "voiceStatusDownloading": "Download {percent} %",

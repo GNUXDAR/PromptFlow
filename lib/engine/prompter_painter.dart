@@ -1,6 +1,7 @@
 import 'package:flutter/rendering.dart';
 
 import '../domain/entities/prompter_settings.dart';
+import 'script_layout.dart';
 import 'scroll_engine.dart';
 
 /// Pinta la capa de texto. Se registra con `repaint: engine`, por lo que en
@@ -46,6 +47,10 @@ class PrompterPainter extends CustomPainter {
     final dy = focusY - snapped;
     final left = (size.width - layout.width) / 2;
 
+    final spoken = settings.highlightSpoken ? engine.spokenWord : null;
+    final origin = Offset(left, dy);
+    if (spoken != null) _paintSpokenBackground(canvas, layout, spoken, origin);
+
     // Solo los bloques visibles (culling): O(visibles), no O(guion).
     final viewTop = -dy, viewBottom = size.height - dy;
     for (final b in layout.blocks) {
@@ -53,6 +58,8 @@ class PrompterPainter extends CustomPainter {
       if (b.top > viewBottom) break;
       b.painter.paint(canvas, Offset(left, b.top + dy));
     }
+
+    if (spoken != null) _paintSpokenUnderline(canvas, layout, spoken, origin);
 
     if (settings.showFocusGuide) {
       final lineH = settings.fontSize * settings.lineHeight;
@@ -84,6 +91,52 @@ class PrompterPainter extends CustomPainter {
     }
 
     canvas.restore();
+  }
+
+  /// Fondo translúcido bajo la palabra que se acaba de decir.
+  void _paintSpokenBackground(Canvas canvas, ScriptLayout layout, int word, Offset origin) {
+    final f = settings.fontSize;
+    final paint = Paint()..color = PrompterPalette.spoken.withValues(alpha: 0.20);
+    for (final r in layout.wordRects(word)) {
+      final rect = _glyphBand(r.shift(origin)).inflate(f * 0.08);
+      canvas.drawRRect(RRect.fromRectAndRadius(rect, Radius.circular(f * 0.16)), paint);
+    }
+  }
+
+  /// Subrayado con brillo de lo leído en la línea actual, hasta la palabra dicha.
+  void _paintSpokenUnderline(Canvas canvas, ScriptLayout layout, int word, Offset origin) {
+    final f = settings.fontSize;
+    // Une los rectángulos por línea: un trazo continuo por renglón.
+    final spans = <double, (double, double)>{};
+    for (var i = layout.lineStartOf(word); i <= word; i++) {
+      for (final raw in layout.wordRects(i)) {
+        final r = raw.shift(origin);
+        final y = _glyphBand(r).bottom + f * 0.06;
+        final cur = spans[y];
+        spans[y] = cur == null ? (r.left, r.right) : (cur.$1 < r.left ? cur.$1 : r.left, cur.$2 > r.right ? cur.$2 : r.right);
+      }
+    }
+    final glow = Paint()
+      ..color = PrompterPalette.spoken.withValues(alpha: 0.65)
+      ..strokeWidth = f * 0.10
+      ..strokeCap = StrokeCap.round
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, f * 0.12);
+    final line = Paint()
+      ..color = PrompterPalette.spoken
+      ..strokeWidth = f * 0.06
+      ..strokeCap = StrokeCap.round;
+    for (final MapEntry(key: y, value: (x0, x1)) in spans.entries) {
+      canvas.drawLine(Offset(x0, y), Offset(x1, y), glow);
+      canvas.drawLine(Offset(x0, y), Offset(x1, y), line);
+    }
+  }
+
+  /// Banda vertical que ocupan los glifos dentro de la caja de línea (la caja
+  /// incluye el interlineado; los glifos van centrados en ella).
+  Rect _glyphBand(Rect lineBox) {
+    final f = settings.fontSize;
+    final c = lineBox.center.dy;
+    return Rect.fromLTRB(lineBox.left, c - f * 0.58, lineBox.right, c + f * 0.52);
   }
 
   @override

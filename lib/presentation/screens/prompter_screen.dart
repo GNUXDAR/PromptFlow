@@ -411,6 +411,12 @@ class _SettingsSheet extends StatelessWidget {
                 value: s.showFocusGuide,
                 onChanged: (v) => set((p) => p.copyWith(showFocusGuide: v)),
               ),
+              SwitchListTile(
+                title: Text(l10n.settingsHighlightSpoken),
+                secondary: const Icon(Icons.border_color_outlined, color: PrompterPalette.spoken),
+                value: s.highlightSpoken,
+                onChanged: (v) => set((p) => p.copyWith(highlightSpoken: v)),
+              ),
               const Divider(height: 32),
               _VoiceSection(controller: controller),
             ]),

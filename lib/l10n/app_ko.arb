@@ -65,6 +65,7 @@
   "settingsMirrorH": "좌우 반전 (H)",
   "settingsMirrorV": "상하 반전 (V)",
   "settingsFocusGuide": "포커스 라인 가이드",
+  "settingsHighlightSpoken": "말한 부분 강조 (음성)",
   "voiceTitle": "음성 따라가기",
   "voiceLanguage": "음성 언어",
   "voiceStatusDownloading": "다운로드 중 {percent}%",

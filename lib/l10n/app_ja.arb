@@ -65,6 +65,7 @@
   "settingsMirrorH": "左右反転 (H)",
   "settingsMirrorV": "上下反転 (V)",
   "settingsFocusGuide": "フォーカスラインのガイド",
+  "settingsHighlightSpoken": "話した部分をハイライト（音声）",
   "voiceTitle": "音声追従",
   "voiceLanguage": "音声の言語",
   "voiceStatusDownloading": "ダウンロード中 {percent}%",

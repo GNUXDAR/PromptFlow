@@ -65,6 +65,7 @@
   "settingsMirrorH": "水平镜像 (H)",
   "settingsMirrorV": "垂直镜像 (V)",
   "settingsFocusGuide": "焦点线指示",
+  "settingsHighlightSpoken": "高亮我说出的内容（语音）",
   "voiceTitle": "语音跟随",
   "voiceLanguage": "语音语言",
   "voiceStatusDownloading": "正在下载 {percent}%",
