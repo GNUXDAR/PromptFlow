@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=PromptFlow
+GenericName=Teleprompter
+GenericName[es]=Teleprompter
+Comment=Teleprompter with remote control and offline voice following
+Comment[es]=Teleprompter con control remoto y seguimiento por voz sin conexión
+Exec=@EXEC@
+Icon=com.promptflow.promptflow
+Terminal=false
+Categories=AudioVideo;
+Keywords=teleprompter;prompter;script;guion;voice;voz;
+StartupWMClass=com.promptflow.promptflow
+StartupNotify=true

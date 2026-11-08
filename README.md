@@ -19,6 +19,15 @@ tool/build_release.sh         # o: android | linux
 
 Deja en `dist/` los archivos con su nombre final: `PromptFlow-<versión>-android-arm64.apk` (la mayoría de móviles), `-android-arm32.apk`, `-android-x86_64.apk`, `-android-universal.apk`, `PromptFlow-<versión>-linux-x64.tar.gz` y `SHA256SUMS`.
 
+Instalar en Linux (aparece en el menú de aplicaciones con su icono):
+
+```bash
+tar -xzf PromptFlow-<versión>-linux-x64.tar.gz
+PromptFlow-<versión>/install.sh       # desinstalar: ~/.local/share/promptflow/uninstall.sh
+```
+
+El logo está en `assets/branding/` (SVG). Si lo cambias, regenera todos los iconos con `tool/generate_icons.sh`.
+
 ### Seguimiento por voz (opcional, sin conexión)
 
 El texto avanza al ritmo de tu voz gracias a [Vosk](https://alphacephei.com/vosk/), un reconocimiento de voz local. Hay modelos para 11 idiomas: es, en, pt, fr, de, it, ru, zh, ja, ko e hi.
