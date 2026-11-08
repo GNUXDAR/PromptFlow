@@ -100,6 +100,13 @@ install(FILES "${FLUTTER_ICU_DATA_FILE}" DESTINATION "${INSTALL_BUNDLE_DATA_DIR}
 install(FILES "${FLUTTER_LIBRARY}" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
   COMPONENT Runtime)
 
+# Integración con el escritorio: iconos, entrada de menú e instalador.
+set(PACKAGING_DIR "${CMAKE_CURRENT_SOURCE_DIR}/packaging")
+install(DIRECTORY "${PACKAGING_DIR}/icons/" DESTINATION "${INSTALL_BUNDLE_DATA_DIR}/icons" COMPONENT Runtime)
+install(FILES "${PACKAGING_DIR}/${APPLICATION_ID}.desktop" DESTINATION "${INSTALL_BUNDLE_DATA_DIR}" COMPONENT Runtime)
+install(PROGRAMS "${PACKAGING_DIR}/install.sh" "${PACKAGING_DIR}/uninstall.sh"
+  DESTINATION "${CMAKE_INSTALL_PREFIX}" COMPONENT Runtime)
+
 # Vosk (opcional): tool/setup_vosk_linux.sh la descarga en linux/third_party/vosk.
 set(VOSK_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/third_party/vosk/libvosk.so")
 if(EXISTS "${VOSK_LIBRARY}")

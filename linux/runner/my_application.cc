@@ -55,6 +55,19 @@ static void my_application_activate(GApplication* application) {
 
   gtk_window_set_default_size(window, 1280, 720);
 
+  // Icono: el del tema si la app está instalada (install.sh); si no, el PNG
+  // que viaja en el bundle (data/icons/…), junto al ejecutable.
+  gtk_window_set_default_icon_name(APPLICATION_ID);
+  {
+    g_autofree gchar* exe = g_file_read_link("/proc/self/exe", nullptr);
+    if (exe != nullptr) {
+      g_autofree gchar* dir = g_path_get_dirname(exe);
+      g_autofree gchar* icon = g_build_filename(
+          dir, "data", "icons", "hicolor", "256x256", "apps", APPLICATION_ID ".png", nullptr);
+      gtk_window_set_icon_from_file(window, icon, nullptr);
+    }
+  }
+
   g_autoptr(FlDartProject) project = fl_dart_project_new();
   fl_dart_project_set_dart_entrypoint_arguments(
       project, self->dart_entrypoint_arguments);

@@ -36,7 +36,7 @@ class AboutScreen extends StatelessWidget {
         children: [
           Center(
             child: Column(children: [
-              const Icon(Icons.subtitles_outlined, size: 64, color: PrompterPalette.yellow),
+              Image.asset('assets/branding/logo.png', width: 96, height: 96, semanticLabel: l10n.appTitle),
               const SizedBox(height: 12),
               Text(l10n.appTitle, style: t.headlineMedium?.copyWith(fontWeight: FontWeight.w700)),
               const SizedBox(height: 4),
