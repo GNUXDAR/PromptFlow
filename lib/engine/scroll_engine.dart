@@ -38,13 +38,21 @@ enum PlaybackStatus { stopped, playing, autoPaused, holding, finished }
 /// El mirroring horizontal/vertical se aplica en el pintor como transformación
 /// del canvas, de modo que no tiene coste por frame.
 class ScrollEngine extends ChangeNotifier {
-  ScrollEngine({required TickerProvider vsync, this.onMarker}) {
+  ScrollEngine({required TickerProvider vsync, this.onMarker}) : _wallClock = (Stopwatch()..start()).elapsedFn {
     _ticker = vsync.createTicker(_onTick);
   }
 
-  /// Constructor para tests: sin Ticker, se avanza con [advance].
+  /// Constructor para tests: sin Ticker, se avanza con [advance]. [clock]
+  /// permite simular el paso del tiempo real en el seguimiento por voz.
   @visibleForTesting
-  ScrollEngine.manual({this.onMarker}) : _ticker = null;
+  ScrollEngine.manual({this.onMarker, Duration Function()? clock})
+      : _ticker = null,
+        _wallClock = clock ?? (Stopwatch()..start()).elapsedFn;
+
+  /// Reloj de pared. El seguimiento por voz mide la velocidad del habla con
+  /// él y no con el reloj del Ticker, que se detiene cuando el motor reposa.
+  final Duration Function() _wallClock;
+  double get _now => _wallClock().inMicroseconds / 1e6;
 
   static const maxFrameDelta = Duration(milliseconds: 250);
   static const velocityTau = 0.22; // s — rampa de arranque/frenado
@@ -55,6 +63,13 @@ class ScrollEngine extends ChangeNotifier {
   static const followVelocityTau = 0.1;
   static const followMaxSpeed = 3000.0; // px/s — tope para alcanzar saltos grandes
   static const followStale = 1.5; // s sin reconocer → el orador se detuvo
+  /// Latencia típica del reconocedor (audio → parcial). El objetivo se
+  /// proyecta este tiempo hacia delante a la velocidad del habla, para que
+  /// el texto vaya con la voz y no medio segundo por detrás.
+  static const followLatency = 0.35;
+  /// Horizonte máximo de la proyección: si el orador calla, el texto se
+  /// adelanta como mucho esto antes de detenerse.
+  static const followMaxProjection = 0.8;
 
   late final Ticker? _ticker;
 
@@ -68,8 +83,7 @@ class ScrollEngine extends ChangeNotifier {
   double _pendingSeek = 0; // px aún por recorrer de un salto animado
   double? _followTarget; // px objetivo en modo voz
   double _followRate = 0; // px/s estimados del habla (feed-forward)
-  double? _lastFollowAt; // reloj interno del motor (s)
-  double _clock = 0;
+  double? _lastFollowAt; // reloj de pared (s) del último reconocimiento
   int _nextMarker = 0;
   Duration? _autoPauseLeft;
   Duration _lastElapsed = Duration.zero;
@@ -210,13 +224,16 @@ class ScrollEngine extends ChangeNotifier {
     final target = l.offsetForWord(word);
     // Feed-forward: velocidad del habla estimada entre reconocimientos (EMA).
     // Sin ella, un control solo proporcional va siempre por detrás (v/K s).
+    final now = _now;
     final prev = _followTarget, at = _lastFollowAt;
-    if (prev != null && at != null && _clock - at > 0.05) {
-      final rate = ((target - prev) / (_clock - at)).clamp(0.0, followMaxSpeed);
-      _followRate += (rate - _followRate) * 0.3;
+    if (prev != null && at != null && now - at > 0.05) {
+      // Los saltos grandes (correcciones del alineador) no son velocidad real.
+      final cap = math.max(_nominalSpeed, 40) * 3;
+      final rate = ((target - prev) / (now - at)).clamp(0.0, cap);
+      _followRate += (rate - _followRate) * 0.35;
     }
     _followTarget = target;
-    _lastFollowAt = _clock;
+    _lastFollowAt = now;
     _ensureTicking();
   }
 
@@ -237,7 +254,6 @@ class ScrollEngine extends ChangeNotifier {
     final l = _layout;
     if (l == null) return;
     final dt = delta.inMicroseconds / 1e6;
-    _clock += dt;
 
     // 1. Pausa automática en curso: consume tiempo, velocidad objetivo 0.
     if (_status == PlaybackStatus.autoPaused) {
@@ -254,8 +270,12 @@ class ScrollEngine extends ChangeNotifier {
     // 2. Velocidad objetivo según el modo.
     double target;
     if (_mode == ScrollMode.voiceFollow && _followTarget != null) {
-      if (_lastFollowAt != null && _clock - _lastFollowAt! > followStale) _followRate = 0;
-      final err = _followTarget! - _offset;
+      final since = _lastFollowAt == null ? 0.0 : _now - _lastFollowAt!;
+      if (since > followStale) _followRate = 0;
+      // Objetivo proyectado: el último reconocimiento + lo que el orador ha
+      // dicho desde entonces (velocidad estimada × tiempo, incluida la latencia).
+      final projected = _followTarget! + _followRate * math.min(since + followLatency, followMaxProjection);
+      final err = projected - _offset;
       // Sin feed-forward hacia atrás: si el orador retrocede solo corrige el error.
       final ff = err > -1 ? _followRate : 0.0;
       target = (ff + err * followGain).clamp(-followMaxSpeed, followMaxSpeed).toDouble();
@@ -319,6 +339,7 @@ class ScrollEngine extends ChangeNotifier {
       !isPlaying &&
       _velocity == 0 &&
       _pendingSeek == 0 &&
+      _followRate == 0 &&
       (_followTarget == null || (_followTarget! - _offset).abs() < 0.5);
 
   void _syncNextMarker({double? from, bool inclusive = true}) {
@@ -357,4 +378,8 @@ class ScrollEngine extends ChangeNotifier {
     _layout?.dispose();
     super.dispose();
   }
+}
+
+extension on Stopwatch {
+  Duration Function() get elapsedFn => () => elapsed;
 }
