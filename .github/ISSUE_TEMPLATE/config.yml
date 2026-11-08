@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Guía de contribución
+    url: https://github.com/GNUXDAR/PromptFlow/blob/develop/CONTRIBUTING.md
+    about: Cómo preparar el entorno, nombrar ramas y abrir un PR a develop.
