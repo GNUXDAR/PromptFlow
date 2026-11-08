@@ -382,4 +382,45 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get remoteChangeScript => 'स्क्रिप्ट बदलें';
+
+  @override
+  String get aboutTitle => 'परिचय';
+
+  @override
+  String aboutVersion(String version) {
+    return 'संस्करण $version';
+  }
+
+  @override
+  String get aboutTagline =>
+      'Linux और Android के लिए टेलीप्रॉम्प्टर: स्मूद स्क्रॉल, लोकल नेटवर्क से रिमोट कंट्रोल और ऑफ़लाइन आवाज़ ट्रैकिंग।';
+
+  @override
+  String get aboutCreatedBy => 'निर्माता';
+
+  @override
+  String get aboutFollow => 'फ़ॉलो करें';
+
+  @override
+  String get aboutProject => 'प्रोजेक्ट';
+
+  @override
+  String get aboutSourceCode => 'सोर्स कोड';
+
+  @override
+  String get aboutContribute => 'योगदान दें';
+
+  @override
+  String get aboutLicense => 'MIT लाइसेंस';
+
+  @override
+  String get aboutVoiceCredit => 'ऑफ़लाइन वाक् पहचान: Vosk (Apache 2.0)';
+
+  @override
+  String get aboutLicenses => 'ओपन-सोर्स लाइसेंस';
+
+  @override
+  String aboutOpenFailed(String url) {
+    return '$url नहीं खोला जा सका';
+  }
 }

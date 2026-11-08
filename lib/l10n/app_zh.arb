@@ -105,5 +105,17 @@
   "remoteFollowVoice": "语音跟随",
   "remoteStart": "开头",
   "remoteSections": "章节和提示点",
-  "remoteChangeScript": "更换脚本"
+  "remoteChangeScript": "更换脚本",
+  "aboutTitle": "关于",
+  "aboutVersion": "版本 {version}",
+  "aboutTagline": "适用于 Linux 和 Android 的提词器：流畅滚动、局域网遥控和离线语音跟随。",
+  "aboutCreatedBy": "作者",
+  "aboutFollow": "关注",
+  "aboutProject": "项目",
+  "aboutSourceCode": "源代码",
+  "aboutContribute": "参与贡献",
+  "aboutLicense": "MIT 许可证",
+  "aboutVoiceCredit": "离线语音识别：Vosk（Apache 2.0）",
+  "aboutLicenses": "开源许可证",
+  "aboutOpenFailed": "无法打开 {url}"
 }

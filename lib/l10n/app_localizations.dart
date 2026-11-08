@@ -753,6 +753,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Change script'**
   String get remoteChangeScript;
+
+  /// Title of the About screen and tooltip of its button on the home screen.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get aboutTitle;
+
+  /// No description provided for @aboutVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String aboutVersion(String version);
+
+  /// No description provided for @aboutTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Teleprompter for Linux and Android: smooth scrolling, remote control over your local network and offline voice following.'**
+  String get aboutTagline;
+
+  /// No description provided for @aboutCreatedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Created by'**
+  String get aboutCreatedBy;
+
+  /// No description provided for @aboutFollow.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow'**
+  String get aboutFollow;
+
+  /// No description provided for @aboutProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Project'**
+  String get aboutProject;
+
+  /// No description provided for @aboutSourceCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Source code'**
+  String get aboutSourceCode;
+
+  /// No description provided for @aboutContribute.
+  ///
+  /// In en, this message translates to:
+  /// **'Contribute'**
+  String get aboutContribute;
+
+  /// No description provided for @aboutLicense.
+  ///
+  /// In en, this message translates to:
+  /// **'MIT License'**
+  String get aboutLicense;
+
+  /// No description provided for @aboutVoiceCredit.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline speech recognition: Vosk (Apache 2.0)'**
+  String get aboutVoiceCredit;
+
+  /// No description provided for @aboutLicenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Open-source licenses'**
+  String get aboutLicenses;
+
+  /// No description provided for @aboutOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open {url}'**
+  String aboutOpenFailed(String url);
 }
 
 class _AppLocalizationsDelegate

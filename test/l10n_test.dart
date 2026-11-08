@@ -41,6 +41,8 @@ void main() {
           expect(s, allOf(contains('192.168.1.20'), contains('47820'), contains('4821')));
         }
         expect(l.editorCueSnippet, startsWith('[CUE '));
+        expect(l.aboutVersion('1.2.3'), contains('1.2.3'));
+        expect(l.aboutOpenFailed('https://x.y'), contains('https://x.y'));
         expect(l.editorSection, startsWith('## '));
       });
     });

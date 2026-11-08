@@ -105,5 +105,17 @@
   "remoteFollowVoice": "تتبّع الصوت",
   "remoteStart": "البداية",
   "remoteSections": "الأقسام والإشارات",
-  "remoteChangeScript": "تغيير النص"
+  "remoteChangeScript": "تغيير النص",
+  "aboutTitle": "حول التطبيق",
+  "aboutVersion": "الإصدار {version}",
+  "aboutTagline": "جهاز تلقين لنظامي Linux وAndroid: تمرير سلس، وتحكم عن بُعد عبر الشبكة المحلية، وتتبّع صوتي دون اتصال.",
+  "aboutCreatedBy": "من إنشاء",
+  "aboutFollow": "تابعني",
+  "aboutProject": "المشروع",
+  "aboutSourceCode": "الشيفرة المصدرية",
+  "aboutContribute": "ساهم",
+  "aboutLicense": "رخصة MIT",
+  "aboutVoiceCredit": "التعرّف على الكلام دون اتصال: Vosk (Apache 2.0)",
+  "aboutLicenses": "تراخيص البرمجيات مفتوحة المصدر",
+  "aboutOpenFailed": "تعذّر فتح {url}"
 }

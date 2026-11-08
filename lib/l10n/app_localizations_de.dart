@@ -382,4 +382,45 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get remoteChangeScript => 'Skript wechseln';
+
+  @override
+  String get aboutTitle => 'Über';
+
+  @override
+  String aboutVersion(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String get aboutTagline =>
+      'Teleprompter für Linux und Android: flüssiges Scrollen, Fernsteuerung im lokalen Netzwerk und Sprachverfolgung ohne Internet.';
+
+  @override
+  String get aboutCreatedBy => 'Erstellt von';
+
+  @override
+  String get aboutFollow => 'Folgen';
+
+  @override
+  String get aboutProject => 'Projekt';
+
+  @override
+  String get aboutSourceCode => 'Quellcode';
+
+  @override
+  String get aboutContribute => 'Mitwirken';
+
+  @override
+  String get aboutLicense => 'MIT-Lizenz';
+
+  @override
+  String get aboutVoiceCredit => 'Offline-Spracherkennung: Vosk (Apache 2.0)';
+
+  @override
+  String get aboutLicenses => 'Open-Source-Lizenzen';
+
+  @override
+  String aboutOpenFailed(String url) {
+    return '$url konnte nicht geöffnet werden';
+  }
 }

@@ -105,5 +105,17 @@
   "remoteFollowVoice": "Seguir voz",
   "remoteStart": "Inicio",
   "remoteSections": "Secciones y cues",
-  "remoteChangeScript": "Cambiar de guion"
+  "remoteChangeScript": "Cambiar de guion",
+  "aboutTitle": "Acerca de",
+  "aboutVersion": "Versión {version}",
+  "aboutTagline": "Teleprompter para Linux y Android: scroll suave, control remoto por la red local y seguimiento por voz sin conexión.",
+  "aboutCreatedBy": "Creado por",
+  "aboutFollow": "Sígueme",
+  "aboutProject": "Proyecto",
+  "aboutSourceCode": "Código fuente",
+  "aboutContribute": "Contribuir",
+  "aboutLicense": "Licencia MIT",
+  "aboutVoiceCredit": "Reconocimiento de voz sin conexión: Vosk (Apache 2.0)",
+  "aboutLicenses": "Licencias de código abierto",
+  "aboutOpenFailed": "No se pudo abrir {url}"
 }

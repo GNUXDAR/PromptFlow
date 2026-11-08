@@ -378,4 +378,45 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get remoteChangeScript => '대본 변경';
+
+  @override
+  String get aboutTitle => '정보';
+
+  @override
+  String aboutVersion(String version) {
+    return '버전 $version';
+  }
+
+  @override
+  String get aboutTagline =>
+      'Linux와 Android용 프롬프터: 부드러운 스크롤, 로컬 네트워크 리모컨, 오프라인 음성 추적.';
+
+  @override
+  String get aboutCreatedBy => '만든 사람';
+
+  @override
+  String get aboutFollow => '팔로우';
+
+  @override
+  String get aboutProject => '프로젝트';
+
+  @override
+  String get aboutSourceCode => '소스 코드';
+
+  @override
+  String get aboutContribute => '기여하기';
+
+  @override
+  String get aboutLicense => 'MIT 라이선스';
+
+  @override
+  String get aboutVoiceCredit => '오프라인 음성 인식: Vosk (Apache 2.0)';
+
+  @override
+  String get aboutLicenses => '오픈 소스 라이선스';
+
+  @override
+  String aboutOpenFailed(String url) {
+    return '$url을(를) 열 수 없습니다';
+  }
 }

@@ -284,5 +284,34 @@
   "remoteFollowVoice": "Follow voice",
   "remoteStart": "Start",
   "remoteSections": "Sections and cues",
-  "remoteChangeScript": "Change script"
+  "remoteChangeScript": "Change script",
+  "aboutTitle": "About",
+  "@aboutTitle": {
+    "description": "Title of the About screen and tooltip of its button on the home screen."
+  },
+  "aboutVersion": "Version {version}",
+  "@aboutVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "aboutTagline": "Teleprompter for Linux and Android: smooth scrolling, remote control over your local network and offline voice following.",
+  "aboutCreatedBy": "Created by",
+  "aboutFollow": "Follow",
+  "aboutProject": "Project",
+  "aboutSourceCode": "Source code",
+  "aboutContribute": "Contribute",
+  "aboutLicense": "MIT License",
+  "aboutVoiceCredit": "Offline speech recognition: Vosk (Apache 2.0)",
+  "aboutLicenses": "Open-source licenses",
+  "aboutOpenFailed": "Could not open {url}",
+  "@aboutOpenFailed": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -375,4 +375,44 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get remoteChangeScript => '更换脚本';
+
+  @override
+  String get aboutTitle => '关于';
+
+  @override
+  String aboutVersion(String version) {
+    return '版本 $version';
+  }
+
+  @override
+  String get aboutTagline => '适用于 Linux 和 Android 的提词器：流畅滚动、局域网遥控和离线语音跟随。';
+
+  @override
+  String get aboutCreatedBy => '作者';
+
+  @override
+  String get aboutFollow => '关注';
+
+  @override
+  String get aboutProject => '项目';
+
+  @override
+  String get aboutSourceCode => '源代码';
+
+  @override
+  String get aboutContribute => '参与贡献';
+
+  @override
+  String get aboutLicense => 'MIT 许可证';
+
+  @override
+  String get aboutVoiceCredit => '离线语音识别：Vosk（Apache 2.0）';
+
+  @override
+  String get aboutLicenses => '开源许可证';
+
+  @override
+  String aboutOpenFailed(String url) {
+    return '无法打开 $url';
+  }
 }

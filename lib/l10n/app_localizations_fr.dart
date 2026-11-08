@@ -382,4 +382,46 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get remoteChangeScript => 'Changer de script';
+
+  @override
+  String get aboutTitle => 'À propos';
+
+  @override
+  String aboutVersion(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String get aboutTagline =>
+      'Prompteur pour Linux et Android : défilement fluide, télécommande sur le réseau local et suivi vocal hors ligne.';
+
+  @override
+  String get aboutCreatedBy => 'Créé par';
+
+  @override
+  String get aboutFollow => 'Suivre';
+
+  @override
+  String get aboutProject => 'Projet';
+
+  @override
+  String get aboutSourceCode => 'Code source';
+
+  @override
+  String get aboutContribute => 'Contribuer';
+
+  @override
+  String get aboutLicense => 'Licence MIT';
+
+  @override
+  String get aboutVoiceCredit =>
+      'Reconnaissance vocale hors ligne : Vosk (Apache 2.0)';
+
+  @override
+  String get aboutLicenses => 'Licences open source';
+
+  @override
+  String aboutOpenFailed(String url) {
+    return 'Impossible d\'ouvrir $url';
+  }
 }

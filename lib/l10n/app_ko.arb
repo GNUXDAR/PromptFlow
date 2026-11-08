@@ -105,5 +105,17 @@
   "remoteFollowVoice": "음성 따라가기",
   "remoteStart": "처음으로",
   "remoteSections": "섹션 및 큐",
-  "remoteChangeScript": "대본 변경"
+  "remoteChangeScript": "대본 변경",
+  "aboutTitle": "정보",
+  "aboutVersion": "버전 {version}",
+  "aboutTagline": "Linux와 Android용 프롬프터: 부드러운 스크롤, 로컬 네트워크 리모컨, 오프라인 음성 추적.",
+  "aboutCreatedBy": "만든 사람",
+  "aboutFollow": "팔로우",
+  "aboutProject": "프로젝트",
+  "aboutSourceCode": "소스 코드",
+  "aboutContribute": "기여하기",
+  "aboutLicense": "MIT 라이선스",
+  "aboutVoiceCredit": "오프라인 음성 인식: Vosk (Apache 2.0)",
+  "aboutLicenses": "오픈 소스 라이선스",
+  "aboutOpenFailed": "{url}을(를) 열 수 없습니다"
 }
