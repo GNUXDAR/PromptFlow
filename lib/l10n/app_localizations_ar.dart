@@ -274,6 +274,11 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String voiceDownloadPrompt(String language, int size) {
+    return 'يحتاج التتبّع الصوتي إلى نموذج الصوت للغة $language ($size ميغابايت). يُنزَّل مرة واحدة فقط ثم يعمل دون اتصال. يمكنك تغيير اللغة من الإعدادات ← الصوت.';
+  }
+
+  @override
   String get voiceErrorNoModel => 'نزّل نموذج الصوت من الإعدادات ← الصوت';
 
   @override

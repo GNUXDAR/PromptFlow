@@ -270,6 +270,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String voiceDownloadPrompt(String language, int size) {
+    return 'Voice following needs the $language speech model ($size MB). It is downloaded once and then works offline. You can change the language in Settings → Voice.';
+  }
+
+  @override
   String get voiceErrorNoModel =>
       'Download the voice model in Settings → Voice';
 

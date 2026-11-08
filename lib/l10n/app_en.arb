@@ -210,6 +210,18 @@
     }
   },
   "voiceDownload": "Download model ({size} MB)",
+  "voiceDownloadPrompt": "Voice following needs the {language} speech model ({size} MB). It is downloaded once and then works offline. You can change the language in Settings → Voice.",
+  "@voiceDownloadPrompt": {
+    "description": "Shown when the user taps the microphone and the speech model is missing. {language} is the language name in its own language (e.g. Español).",
+    "placeholders": {
+      "language": {
+        "type": "String"
+      },
+      "size": {
+        "type": "int"
+      }
+    }
+  },
   "@voiceDownload": {
     "placeholders": {
       "size": {

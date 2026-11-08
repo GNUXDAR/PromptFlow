@@ -272,6 +272,11 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String voiceDownloadPrompt(String language, int size) {
+    return 'Для слежения за голосом нужна голосовая модель: $language ($size МБ). Она скачивается один раз и потом работает без интернета. Язык можно изменить в разделе Настройки → Голос.';
+  }
+
+  @override
   String get voiceErrorNoModel =>
       'Скачайте голосовую модель в разделе Настройки → Голос';
 

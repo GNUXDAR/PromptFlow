@@ -270,6 +270,11 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String voiceDownloadPrompt(String language, int size) {
+    return 'El seguimiento por voz necesita el modelo de voz en $language ($size MB). Se descarga una sola vez y después funciona sin conexión. Puedes cambiar el idioma en Ajustes → Voz.';
+  }
+
+  @override
   String get voiceErrorNoModel => 'Descarga el modelo de voz en Ajustes → Voz';
 
   @override

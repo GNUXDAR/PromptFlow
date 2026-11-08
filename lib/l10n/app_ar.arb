@@ -73,6 +73,7 @@
   "voiceStatusNoEngine": "تم تثبيت النموذج، لكن محرك Vosk غير موجود (على Linux: tool/setup_vosk_linux.sh)",
   "voiceStatusNoModel": "النموذج غير مثبّت ({size} MB، يُنزَّل مرة واحدة فقط)",
   "voiceDownload": "تنزيل النموذج ({size} MB)",
+  "voiceDownloadPrompt": "يحتاج التتبّع الصوتي إلى نموذج الصوت للغة {language} ({size} ميغابايت). يُنزَّل مرة واحدة فقط ثم يعمل دون اتصال. يمكنك تغيير اللغة من الإعدادات ← الصوت.",
   "voiceErrorNoModel": "نزّل نموذج الصوت من الإعدادات ← الصوت",
   "voiceErrorNoEngine": "Vosk غير مثبّت (tool/setup_vosk_linux.sh)",
   "voiceErrorPermission": "تم رفض إذن الميكروفون. اسمح به من إعدادات النظام لاستخدام تتبّع الصوت.",

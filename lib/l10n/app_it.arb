@@ -73,6 +73,7 @@
   "voiceStatusNoEngine": "Modello installato, ma manca il motore Vosk (su Linux: tool/setup_vosk_linux.sh)",
   "voiceStatusNoModel": "Modello non installato ({size} MB, scaricato una sola volta)",
   "voiceDownload": "Scarica modello ({size} MB)",
+  "voiceDownloadPrompt": "L'inseguimento vocale richiede il modello vocale {language} ({size} MB). Si scarica una sola volta e poi funziona offline. Puoi cambiare la lingua in Impostazioni → Voce.",
   "voiceErrorNoModel": "Scarica il modello vocale in Impostazioni → Voce",
   "voiceErrorNoEngine": "Vosk non è installato (tool/setup_vosk_linux.sh)",
   "voiceErrorPermission": "Autorizzazione al microfono negata. Consentila nelle impostazioni di sistema per usare il controllo vocale.",

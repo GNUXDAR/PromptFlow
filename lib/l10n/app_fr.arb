@@ -73,6 +73,7 @@
   "voiceStatusNoEngine": "Modèle installé, mais le moteur Vosk est absent (sous Linux : tool/setup_vosk_linux.sh)",
   "voiceStatusNoModel": "Modèle non installé ({size} Mo, téléchargé une seule fois)",
   "voiceDownload": "Télécharger le modèle ({size} Mo)",
+  "voiceDownloadPrompt": "Le suivi vocal a besoin du modèle vocal {language} ({size} Mo). Il est téléchargé une seule fois, puis fonctionne hors ligne. Vous pouvez changer la langue dans Paramètres → Voix.",
   "voiceErrorNoModel": "Téléchargez le modèle vocal dans Paramètres → Voix",
   "voiceErrorNoEngine": "Vosk n'est pas installé (tool/setup_vosk_linux.sh)",
   "voiceErrorPermission": "Accès au micro refusé. Autorisez-le dans les paramètres du système pour utiliser le suivi vocal.",

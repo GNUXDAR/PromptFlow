@@ -73,6 +73,7 @@
   "voiceStatusNoEngine": "模型已安装，但缺少 Vosk 引擎（Linux：tool/setup_vosk_linux.sh）",
   "voiceStatusNoModel": "模型未安装（{size} MB，只需下载一次）",
   "voiceDownload": "下载模型（{size} MB）",
+  "voiceDownloadPrompt": "语音跟随需要{language}语音模型（{size} MB）。只需下载一次，之后可离线使用。可在“设置 → 语音”中更改语言。",
   "voiceErrorNoModel": "请在“设置 → 语音”中下载语音模型",
   "voiceErrorNoEngine": "未安装 Vosk（tool/setup_vosk_linux.sh）",
   "voiceErrorPermission": "麦克风权限被拒绝。请在系统设置中允许，以使用语音跟随。",

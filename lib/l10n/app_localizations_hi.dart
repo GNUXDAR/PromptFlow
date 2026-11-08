@@ -270,6 +270,11 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
+  String voiceDownloadPrompt(String language, int size) {
+    return 'आवाज़ ट्रैकिंग के लिए $language वॉइस मॉडल ($size MB) चाहिए। यह सिर्फ़ एक बार डाउनलोड होता है और फिर ऑफ़लाइन काम करता है। भाषा सेटिंग्स → आवाज़ में बदली जा सकती है।';
+  }
+
+  @override
   String get voiceErrorNoModel =>
       'सेटिंग्स → आवाज़ में आवाज़ मॉडल डाउनलोड करें';
 

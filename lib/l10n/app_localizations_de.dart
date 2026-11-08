@@ -270,6 +270,11 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String voiceDownloadPrompt(String language, int size) {
+    return 'Die Sprachverfolgung braucht das Sprachmodell für $language ($size MB). Es wird einmal heruntergeladen und funktioniert danach offline. Die Sprache kannst du unter Einstellungen → Sprache ändern.';
+  }
+
+  @override
   String get voiceErrorNoModel =>
       'Lade das Sprachmodell unter Einstellungen → Sprache herunter';
 

@@ -159,6 +159,43 @@ class _Hud extends StatefulWidget {
 class _HudState extends State<_Hud> {
   Timer? _clock;
 
+  /// Micrófono: activa/desactiva la voz o, si falta el modelo, ofrece
+  /// descargarlo y activa la voz en cuanto termina.
+  Future<void> _onVoicePressed() async {
+    final c = widget.controller;
+    final l10n = context.l10n;
+    if (c.voiceModelProgress != null) return; // ya descargando
+    if (c.voiceAvailable) {
+      widget.onCommand(VoiceSyncCommand(!c.voiceActive));
+      return;
+    }
+    if (c.voiceModelInstalled) {
+      // Hay modelo pero falta el motor (Linux sin libvosk).
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.voiceErrorNoEngine)));
+      return;
+    }
+    final model = VoiceModels.byCode(c.settings.voiceLanguage);
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        icon: const Icon(Icons.mic),
+        title: Text(l10n.voiceTitle),
+        content: Text(l10n.voiceDownloadPrompt(model.name, model.sizeMb)),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l10n.commonCancel)),
+          FilledButton.icon(
+            onPressed: () => Navigator.pop(ctx, true),
+            icon: const Icon(Icons.download),
+            label: Text(l10n.voiceDownload(model.sizeMb)),
+          ),
+        ],
+      ),
+    );
+    if (ok != true) return;
+    await c.installVoiceModel();
+    if (c.voiceAvailable && !c.voiceActive) widget.onCommand(const VoiceSyncCommand(true));
+  }
+
   @override
   void initState() {
     super.initState();
@@ -264,14 +301,22 @@ class _HudState extends State<_Hud> {
                 ),
                 const SizedBox(width: 12),
                 Text(l10n.prompterStatusLine(status, formatDuration(e.remaining)), style: t.bodyMedium),
-                if (c.voiceAvailable)
-                  IconButton(
-                    tooltip: c.voiceActive ? l10n.prompterVoiceOff : l10n.prompterVoiceOn,
-                    isSelected: c.voiceActive,
-                    onPressed: () => widget.onCommand(VoiceSyncCommand(!c.voiceActive)),
-                    icon: const Icon(Icons.mic_none),
-                    selectedIcon: const Icon(Icons.mic),
-                  ),
+                // Siempre visible: si falta el modelo, tocarlo ofrece descargarlo.
+                IconButton(
+                  tooltip: c.voiceActive ? l10n.prompterVoiceOff : l10n.prompterVoiceOn,
+                  isSelected: c.voiceActive,
+                  onPressed: _onVoicePressed,
+                  icon: c.voiceModelProgress != null
+                      ? SizedBox.square(
+                          dimension: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                            value: c.voiceModelProgress! < 0 ? null : c.voiceModelProgress,
+                          ),
+                        )
+                      : Icon(c.voiceAvailable ? Icons.mic_none : Icons.mic_off_outlined),
+                  selectedIcon: const Icon(Icons.mic),
+                ),
                 PopupMenuButton<String>(
                   tooltip: l10n.prompterGoToSection,
                   icon: const Icon(Icons.bookmarks_outlined),
