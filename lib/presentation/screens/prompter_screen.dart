@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../../data/repositories/script_repository.dart';
 import '../../domain/entities/prompter_settings.dart';
@@ -55,15 +56,27 @@ class _PrompterScreenState extends State<PrompterScreen> with SingleTickerProvid
     super.initState();
     _c.startServer();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    // La pantalla no se apaga ni se bloquea mientras el prompter está abierto
+    // (Android: FLAG_KEEP_SCREEN_ON; Linux: inhibe el salvapantallas).
+    _keepAwake(true);
     _pokeHud();
   }
 
   @override
   void dispose() {
     _hudTimer?.cancel();
+    _keepAwake(false);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     _c.dispose();
     super.dispose();
+  }
+
+  static Future<void> _keepAwake(bool on) async {
+    try {
+      await WakelockPlus.toggle(enable: on);
+    } on Object catch (e) {
+      debugPrint('PF: no se pudo mantener la pantalla encendida: $e');
+    }
   }
 
   /// Muestra el HUD y lo oculta tras 3 s si se está reproduciendo.
