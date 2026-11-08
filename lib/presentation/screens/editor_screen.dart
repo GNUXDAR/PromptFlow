@@ -8,6 +8,7 @@ import '../../data/parsing/script_parser.dart';
 import '../../data/repositories/script_repository.dart';
 import '../../domain/entities/script.dart';
 import '../../domain/services/wpm_estimator.dart';
+import '../l10n.dart';
 import 'prompter_screen.dart';
 
 /// Editor de guiones (Módulo B): texto plano / Markdown con etiquetas,
@@ -23,7 +24,7 @@ class EditorScreen extends StatefulWidget {
 
 class _EditorScreenState extends State<EditorScreen> {
   final _text = TextEditingController();
-  final _name = TextEditingController(text: 'guion.md');
+  final _name = TextEditingController(text: 'script.md');
   String? _path;
   double _wpm = 140;
   Duration? _target;
@@ -85,7 +86,7 @@ class _EditorScreenState extends State<EditorScreen> {
       _path = await widget.repository.save(_name.text, _text.text);
     }
     _dirty = false;
-    if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Guardado en $_path')));
+    if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.l10n.editorSavedTo(_path!))));
   }
 
   Future<void> _rehearse() async {
@@ -107,6 +108,7 @@ class _EditorScreenState extends State<EditorScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final est = WpmEstimator.estimate(_parsed, _wpm);
     final neededWpm = _target == null ? null : WpmEstimator.wpmForDuration(_parsed, _target!);
 
@@ -116,11 +118,11 @@ class _EditorScreenState extends State<EditorScreen> {
         appBar: AppBar(
           title: TextField(
             controller: _name,
-            decoration: const InputDecoration(border: InputBorder.none, hintText: 'nombre.md'),
+            decoration: InputDecoration(border: InputBorder.none, hintText: l10n.editorNameHint),
           ),
           actions: [
-            IconButton(tooltip: 'Guardar (Ctrl+S)', onPressed: _save, icon: const Icon(Icons.save)),
-            IconButton(tooltip: 'Ensayar en el prompter', onPressed: _rehearse, icon: const Icon(Icons.play_arrow)),
+            IconButton(tooltip: l10n.editorSave, onPressed: _save, icon: const Icon(Icons.save)),
+            IconButton(tooltip: l10n.editorRehearse, onPressed: _rehearse, icon: const Icon(Icons.play_arrow)),
           ],
         ),
         body: PopScope(
@@ -130,11 +132,11 @@ class _EditorScreenState extends State<EditorScreen> {
             final leave = await showDialog<bool>(
               context: context,
               builder: (c) => AlertDialog(
-                title: const Text('Cambios sin guardar'),
-                content: const Text('¿Salir sin guardar?'),
+                title: Text(l10n.editorUnsavedTitle),
+                content: Text(l10n.editorUnsavedBody),
                 actions: [
-                  TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Cancelar')),
-                  TextButton(onPressed: () => Navigator.pop(c, true), child: const Text('Salir')),
+                  TextButton(onPressed: () => Navigator.pop(c, false), child: Text(l10n.commonCancel)),
+                  TextButton(onPressed: () => Navigator.pop(c, true), child: Text(l10n.editorLeave)),
                 ],
               ),
             );
@@ -155,9 +157,9 @@ class _EditorScreenState extends State<EditorScreen> {
                     expands: true,
                     textAlignVertical: TextAlignVertical.top,
                     style: const TextStyle(fontFamily: 'monospace', fontSize: 16, height: 1.5),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       border: InputBorder.none,
-                      hintText: '# Título\n\n## Sección\n[CAM 1] Texto del guion con **énfasis**. [PAUSE 2s]',
+                      hintText: l10n.editorBodyHint,
                     ),
                   ),
                 ),
@@ -185,19 +187,21 @@ class _Toolbar extends StatelessWidget {
   final void Function(String) onWrap;
 
   @override
-  Widget build(BuildContext context) => SingleChildScrollView(
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Row(children: [
           for (final (label, action) in <(String, VoidCallback)>[
-            ('Negrita', () => onWrap('**')),
-            ('Resaltar', () => onWrap('==')),
-            ('## Sección', () => onInsert('\n## ')),
+            (l10n.editorBold, () => onWrap('**')),
+            (l10n.editorHighlight, () => onWrap('==')),
+            (l10n.editorSection, () => onInsert('\n## ')),
             ('[CAM 1]', () => onInsert('[CAM 1] ')),
             ('[CAM 2]', () => onInsert('[CAM 2] ')),
-            ('Pausa 2s', () => onInsert(' [PAUSE 2s] ')),
-            ('Pausa manual', () => onInsert(' [PAUSE] ')),
-            ('Cue', () => onInsert('[CUE nombre] ')),
+            (l10n.editorPause2s, () => onInsert(' [PAUSE 2s] ')),
+            (l10n.editorPauseManual, () => onInsert(' [PAUSE] ')),
+            (l10n.editorCue, () => onInsert(l10n.editorCueSnippet)),
           ])
             Padding(
               padding: const EdgeInsets.all(4),
@@ -205,6 +209,7 @@ class _Toolbar extends StatelessWidget {
             ),
         ]),
       );
+  }
 }
 
 class _StatsBar extends StatelessWidget {
@@ -229,6 +234,7 @@ class _StatsBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context).textTheme;
+    final l10n = context.l10n;
     return Material(
       color: const Color(0xFF141414),
       child: Padding(
@@ -238,8 +244,8 @@ class _StatsBar extends StatelessWidget {
           runSpacing: 8,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            Text('${script.wordCount} palabras · ${script.sections.length} marcas', style: t.bodyMedium),
-            Text('Duración a ${wpm.round()} WPM: ${formatDuration(estimate)}',
+            Text(l10n.editorStats(script.wordCount, script.sections.length), style: t.bodyMedium),
+            Text(l10n.editorDurationAt(wpm.round(), formatDuration(estimate)),
                 style: t.bodyMedium?.copyWith(fontWeight: FontWeight.w700)),
             SizedBox(
               width: 260,
@@ -254,16 +260,16 @@ class _StatsBar extends StatelessWidget {
             ),
             DropdownButton<Duration?>(
               value: target,
-              hint: const Text('Duración objetivo'),
+              hint: Text(l10n.editorTargetHint),
               items: [
-                const DropdownMenuItem(value: null, child: Text('Sin objetivo')),
+                DropdownMenuItem(value: null, child: Text(l10n.editorNoTarget)),
                 for (final m in [1, 2, 3, 5, 10, 15, 30])
-                  DropdownMenuItem(value: Duration(minutes: m), child: Text('$m min')),
+                  DropdownMenuItem(value: Duration(minutes: m), child: Text(l10n.editorMinutes(m))),
               ],
               onChanged: onTarget,
             ),
             if (target != null)
-              Text(neededWpm == null ? 'Las pausas superan el objetivo' : 'Necesitas ${neededWpm!.round()} WPM',
+              Text(neededWpm == null ? l10n.editorPausesExceedTarget : l10n.editorNeededWpm(neededWpm!.round()),
                   style: t.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.primary)),
           ],
         ),

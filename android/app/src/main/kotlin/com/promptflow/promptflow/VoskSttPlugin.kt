@@ -83,11 +83,11 @@ class VoskSttPlugin(
     private fun start(call: MethodCall, result: MethodChannel.Result) {
         val path = call.argument<String>("modelPath")
         if (!modelLooksValid(path)) {
-            result.error("stt_no_model", "Modelo no encontrado en $path", null)
+            result.error("stt_no_model", "Model not found at $path", null)
             return
         }
         if (activity.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            pendingStart?.second?.error("stt_cancelled", "Sustituido por otra petición", null)
+            pendingStart?.second?.error("stt_cancelled", "Superseded by another request", null)
             pendingStart = call to result
             activity.requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), PERMISSION_REQUEST_CODE)
             return
@@ -117,11 +117,11 @@ class VoskSttPlugin(
                         result.success(null)
                     } catch (e: Exception) {
                         rec.close()
-                        result.error("stt_start_failed", "No se pudo abrir el micrófono: ${e.message}", null)
+                        result.error("stt_start_failed", "Could not open the microphone: ${e.message}", null)
                     }
                 }
             } catch (e: Exception) {
-                main.post { result.error("stt_start_failed", "No se pudo cargar el modelo: ${e.message}", null) }
+                main.post { result.error("stt_start_failed", "Could not load the model: ${e.message}", null) }
             }
         }
     }
@@ -144,7 +144,7 @@ class VoskSttPlugin(
         if (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED) {
             start(call, result)
         } else {
-            result.error("stt_permission", "Permiso de micrófono denegado", null)
+            result.error("stt_permission", "Microphone permission denied", null)
         }
         return true
     }
@@ -189,7 +189,7 @@ class VoskSttPlugin(
     override fun onFinalResult(hypothesis: String?) = emit(hypothesis, true)
 
     override fun onError(exception: Exception?) {
-        main.post { sink?.error("stt_error", exception?.message ?: "Error de reconocimiento", null) }
+        main.post { sink?.error("stt_error", exception?.message ?: "Recognition error", null) }
     }
 
     override fun onTimeout() = Unit

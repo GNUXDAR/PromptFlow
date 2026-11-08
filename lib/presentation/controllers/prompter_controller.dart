@@ -16,6 +16,16 @@ import '../../voice/speech_recognizer.dart';
 import '../../voice/voice_aligner.dart';
 import '../../voice/voice_models.dart';
 
+enum VoiceIssueKind { noModel, noEngine, permissionDenied, downloadFailed, engineError }
+
+/// Problema de voz para mostrar en la UI. El controlador no conoce el idioma
+/// de la interfaz: la UI traduce [kind] y añade [detail] (mensaje técnico).
+final class VoiceIssue {
+  const VoiceIssue(this.kind, [this.detail]);
+  final VoiceIssueKind kind;
+  final String? detail;
+}
+
 /// ViewModel del prompter. Punto único de entrada de comandos: teclado,
 /// pedal, gestos, mando remoto y voz llaman a [execute].
 class PrompterController extends ChangeNotifier implements RemoteHost {
@@ -49,8 +59,9 @@ class PrompterController extends ChangeNotifier implements RemoteHost {
   StreamSubscription<RecognizedSpeech>? _voiceSub;
   bool _voiceActive = false;
   bool? _voiceAvailable;
+  /// Mensaje técnico si el servidor no pudo abrir su puerto (la UI lo traduce).
   String? serverError;
-  String? voiceError;
+  VoiceIssue? voiceError;
   int _settingsRev = 0; // se suma a engine.revision en el snapshot
 
   Script get script => _script;
@@ -72,7 +83,7 @@ class PrompterController extends ChangeNotifier implements RemoteHost {
       await server.start();
       serverError = null;
     } on SocketException catch (e) {
-      serverError = 'No se pudo abrir el puerto ${PfProtocol.defaultWsPort}: ${e.osError?.message ?? e.message}';
+      serverError = e.osError?.message ?? e.message;
     }
     await refreshVoiceAvailability();
     notifyListeners();
@@ -120,7 +131,7 @@ class PrompterController extends ChangeNotifier implements RemoteHost {
         await _recognizer.stop();
         await _recognizer.start(modelPath: await _modelPath(), grammar: _grammarFor(script));
       } on PlatformException catch (e) {
-        voiceError = e.message;
+        voiceError = VoiceIssue(VoiceIssueKind.engineError, e.message);
         await setVoiceSync(false);
       }
     }
@@ -205,7 +216,7 @@ class PrompterController extends ChangeNotifier implements RemoteHost {
     } on VoiceModelCancelled {
       // El usuario canceló.
     } on Object catch (e) {
-      voiceError = 'No se pudo descargar el modelo: $e';
+      voiceError = VoiceIssue(VoiceIssueKind.downloadFailed, '$e');
     } finally {
       _installer = null;
       _voiceModelProgress = null;
@@ -226,9 +237,8 @@ class PrompterController extends ChangeNotifier implements RemoteHost {
     if (enabled) {
       final model = await _modelPath();
       if (!await _recognizer.isAvailable(modelPath: model)) {
-        voiceError = !await VoiceModels.isInstalled(model)
-            ? 'Descarga el modelo de voz en Ajustes → Voz'
-            : 'Vosk no está instalado (tool/setup_vosk_linux.sh)';
+        voiceError = VoiceIssue(
+            !await VoiceModels.isInstalled(model) ? VoiceIssueKind.noModel : VoiceIssueKind.noEngine);
         notifyListeners();
         return;
       }
@@ -239,7 +249,7 @@ class PrompterController extends ChangeNotifier implements RemoteHost {
           if (idx != null) engine.followWord(idx.toDouble());
         },
         onError: (Object e) {
-          voiceError = e is PlatformException ? e.message : '$e';
+          voiceError = VoiceIssue(VoiceIssueKind.engineError, e is PlatformException ? e.message : '$e');
           setVoiceSync(false);
         },
       );
@@ -248,7 +258,9 @@ class PrompterController extends ChangeNotifier implements RemoteHost {
         engine.setMode(ScrollMode.voiceFollow);
         await _recognizer.start(modelPath: model, grammar: _grammarFor(_script));
       } on PlatformException catch (e) {
-        voiceError = e.message;
+        voiceError = e.code == 'stt_permission'
+            ? const VoiceIssue(VoiceIssueKind.permissionDenied)
+            : VoiceIssue(VoiceIssueKind.engineError, e.message);
         await _voiceSub?.cancel();
         _voiceSub = null;
         _aligner = null;

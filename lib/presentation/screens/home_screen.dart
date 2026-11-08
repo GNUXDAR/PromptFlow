@@ -4,29 +4,10 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 import '../../data/repositories/script_repository.dart';
+import '../l10n.dart';
 import 'editor_screen.dart';
 import 'prompter_screen.dart';
 import 'remote_screen.dart';
-
-const sampleScript = '''# Guion de ejemplo
-
-## Apertura
-[CAM 1] Hola y **bienvenidos** a PromptFlow. Este es un guion de ejemplo
-que muestra las marcas disponibles. [PAUSE 2s]
-
-Puedes poner palabras en **negrita** para enfatizar, o ==resaltarlas==
-cuando sean importantes.
-
-## Demostración
-[CAM 2] [CUE Demo] Ahora cambiamos de cámara. Las pausas automáticas detienen
-el texto unos segundos y continúan solas. [PAUSE 1.5s]
-
-Una pausa sin duración detiene el texto hasta que pulses Play. [PAUSE]
-
-## Cierre
-[CAM 1] Gracias por ver. Controla el prompter desde tu teléfono con el
-modo **Control remoto**, o con un pedal Bluetooth.
-''';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.repository});
@@ -37,12 +18,20 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late Future<List<ScriptSummary>> _scripts = _load();
+  Future<List<ScriptSummary>>? _scripts;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _scripts ??= _load();
+  }
 
   Future<List<ScriptSummary>> _load() async {
+    // El guion de ejemplo se crea en el idioma del sistema.
+    final l10n = context.l10n;
     var list = await widget.repository.list();
     if (list.isEmpty) {
-      await widget.repository.save('ejemplo.md', sampleScript);
+      await widget.repository.save(l10n.homeSampleFileName, l10n.homeSampleScript);
       list = await widget.repository.list();
     }
     return list;
@@ -80,11 +69,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('PromptFlow'),
+        title: Text(context.l10n.appTitle),
         actions: [
-          IconButton(tooltip: 'Importar .txt / .md', onPressed: _import, icon: const Icon(Icons.file_open)),
+          IconButton(tooltip: context.l10n.homeImport, onPressed: _import, icon: const Icon(Icons.file_open)),
           IconButton(
-            tooltip: 'Control remoto',
+            tooltip: context.l10n.homeRemote,
             onPressed: () => Navigator.of(context)
                 .push(MaterialPageRoute<void>(builder: (_) => const RemoteScreen())),
             icon: const Icon(Icons.settings_remote),
@@ -94,12 +83,12 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _edit(),
         icon: const Icon(Icons.add),
-        label: const Text('Nuevo guion'),
+        label: Text(context.l10n.homeNewScript),
       ),
       body: FutureBuilder<List<ScriptSummary>>(
         future: _scripts,
         builder: (context, snap) {
-          if (snap.hasError) return Center(child: Text('Error: ${snap.error}'));
+          if (snap.hasError) return Center(child: Text(context.l10n.commonError('${snap.error}')));
           final list = snap.data;
           if (list == null) return const Center(child: CircularProgressIndicator());
           return ListView.separated(
@@ -113,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 subtitle: Text(s.id),
                 onTap: () => _open(s.path),
                 trailing: IconButton(
-                  tooltip: 'Editar ${s.title}',
+                  tooltip: context.l10n.homeEditScript(s.title),
                   icon: const Icon(Icons.edit),
                   onPressed: () => _edit(path: s.path),
                 ),

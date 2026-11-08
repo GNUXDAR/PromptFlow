@@ -128,7 +128,16 @@ Medido en desarrollo: el micrófono se abre y el modelo español carga en ~0,25 
 ```
 En `.txt` solo se interpretan las etiquetas entre corchetes.
 
-## 7. Pendiente / siguientes pasos
+## 7. Internacionalización
+
+* **Interfaz**: `lib/l10n/app_<idioma>.arb`, con `flutter gen-l10n` (configurado en `l10n.yaml`). Hay 12 idiomas: en (referencia), es, pt, fr, de, it, ru, zh, ja, ko, hi y ar. Se usa el idioma del sistema; si no está traducido, inglés.
+* En el código, `context.l10n.<clave>` (`lib/presentation/l10n.dart`). Las capas que no tienen `BuildContext` (como el controlador) no generan texto: exponen errores tipados (`VoiceIssue`) y la UI los traduce.
+* El guion de ejemplo se crea en el idioma del sistema (`homeSampleScript`). Las etiquetas del guion (`[CAM]`, `[PAUSE]`, `[CUE]`) **no se traducen**: son sintaxis.
+* `test/l10n_test.dart` valida cada idioma: carga, etiquetas intactas en el ejemplo, nombre de archivo ASCII, placeholders y plurales.
+* **Documentación traducida** en `docs/i18n/<idioma>/`. README y CONTRIBUTING están en los 11 idiomas; la arquitectura y el protocolo, en inglés. El original en español es la referencia.
+* Limitación conocida: el conteo de palabras (WPM) y el alineado de voz separan palabras por espacios. En chino y japonés, que no los usan, cuentan frases en vez de palabras.
+
+## 8. Pendiente / siguientes pasos
 
 * Mantener la pantalla encendida: `wakelock_plus` en `PrompterScreen`.
 * Rol `follower`: un segundo dispositivo que muestra el mismo guion siguiendo `state.snapshot` (el protocolo ya transmite posición en palabras).

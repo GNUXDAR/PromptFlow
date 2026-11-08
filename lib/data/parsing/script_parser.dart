@@ -64,7 +64,7 @@ abstract final class ScriptParser {
 
     return Script(
       id: id,
-      title: title ?? firstHeading ?? 'Sin título',
+      title: title ?? firstHeading ?? id, // sin encabezado: el nombre del archivo
       source: source,
       format: fmt,
       blocks: blocks,

@@ -98,7 +98,7 @@ class MicSource : public AudioSource {
   int Read(char* buf, std::string* error) override {
     int err = 0;
     if (api_.simple_read(stream_, buf, kChunkBytes, &err) < 0) {
-      *error = std::string("Error leyendo el micrófono: ") + api_.strerror(err);
+      *error = std::string("Error reading the microphone: ") + api_.strerror(err);
       return -1;
     }
     return static_cast<int>(kChunkBytes);
@@ -117,13 +117,13 @@ class WavSource : public AudioSource {
 
   bool Open(std::string* error) {
     if (!file_) {
-      *error = "No se pudo abrir el WAV";
+      *error = "Could not open the WAV file";
       return false;
     }
     char riff[12];
     file_.read(riff, 12);
     if (std::memcmp(riff, "RIFF", 4) != 0 || std::memcmp(riff + 8, "WAVE", 4) != 0) {
-      *error = "El fichero no es WAV";
+      *error = "Not a WAV file";
       return false;
     }
     // Busca el chunk "data" (puede haber "fmt ", "LIST", …).
@@ -133,7 +133,7 @@ class WavSource : public AudioSource {
       if (std::memcmp(id, "data", 4) == 0) return true;
       file_.seekg(size + (size & 1), std::ios::cur);
     }
-    *error = "WAV sin chunk de datos";
+    *error = "WAV file without a data chunk";
     return false;
   }
 
@@ -287,13 +287,13 @@ void RecognitionLoop(Plugin* p, std::string model_path, std::string grammar, FlM
     }
     model = p->model;
   }
-  if (model == nullptr) return fail_start("No se pudo cargar el modelo de Vosk en " + model_path);
+  if (model == nullptr) return fail_start("Could not load the Vosk model at " + model_path);
 
   // Con gramática (lista JSON de palabras del guion + "[unk]") el modelo
   // pequeño solo elige entre palabras del guion: mucha más precisión.
   VoskRecognizer* rec = grammar.empty() ? p->vosk.recognizer_new(model, kSampleRate)
                                         : p->vosk.recognizer_new_grm(model, kSampleRate, grammar.c_str());
-  if (rec == nullptr) return fail_start("No se pudo crear el reconocedor");
+  if (rec == nullptr) return fail_start("Could not create the recognizer");
 
   std::unique_ptr<AudioSource> source;
   std::string error;
@@ -310,7 +310,7 @@ void RecognitionLoop(Plugin* p, std::string model_path, std::string grammar, FlM
     if (s != nullptr) {
       source = std::make_unique<MicSource>(p->pulse, s);
     } else {
-      error = std::string("No se pudo abrir el micrófono: ") + p->pulse.strerror(err);
+      error = std::string("Could not open the microphone: ") + p->pulse.strerror(err);
     }
   }
   if (!source) {
@@ -376,16 +376,16 @@ void HandleMethodCall(FlMethodChannel*, FlMethodCall* call, gpointer user_data) 
   if (g_strcmp0(method, "start") == 0) {
     const std::string model = StringArg(args, "modelPath");
     if (!LoadVosk(p)) {
-      fl_method_call_respond_error(call, "stt_unavailable", "libvosk.so no encontrada", nullptr, nullptr);
+      fl_method_call_respond_error(call, "stt_unavailable", "libvosk.so not found", nullptr, nullptr);
       return;
     }
     if (WavOverride() == nullptr && !LoadPulse(p)) {
-      fl_method_call_respond_error(call, "stt_unavailable", "libpulse-simple.so.0 no encontrada", nullptr,
+      fl_method_call_respond_error(call, "stt_unavailable", "libpulse-simple.so.0 not found", nullptr,
                                    nullptr);
       return;
     }
     if (!ModelLooksValid(model)) {
-      fl_method_call_respond_error(call, "stt_no_model", ("Modelo no encontrado en " + model).c_str(), nullptr,
+      fl_method_call_respond_error(call, "stt_no_model", ("Model not found at " + model).c_str(), nullptr,
                                    nullptr);
       return;
     }
