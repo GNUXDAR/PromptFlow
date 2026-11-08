@@ -8,6 +8,8 @@ void main() {
     final codes = VoiceModels.all.map((m) => m.code).toSet();
     expect(codes, hasLength(VoiceModels.all.length));
     expect(VoiceModels.byCode('xx').code, 'es', reason: 'idioma desconocido → español');
+    expect(VoiceModels.defaultFor('fr'), 'fr', reason: 'idioma del sistema con modelo');
+    expect(VoiceModels.defaultFor('ar'), 'es', reason: 'sin modelo apto para móvil');
     expect(VoiceModels.dirFor(Directory('/r'), 'fr'), '/r/models/vosk-fr');
   });
 

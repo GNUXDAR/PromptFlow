@@ -61,16 +61,28 @@ class VoskSttPlugin(
     private var pendingStart: Pair<MethodCall, MethodChannel.Result>? = null
 
     init {
-        LibVosk.setLogLevel(LogLevel.WARNINGS)
+        // Vosk NO se carga aquí: se carga la primera vez que se usa. Así un
+        // fallo de la librería nativa nunca impide que la app abra.
         methods.setMethodCallHandler(this)
         events.setStreamHandler(this)
+    }
+
+    /** Carga perezosa de libvosk vía JNA. `false` si no se puede cargar. */
+    private val voskLoaded: Boolean by lazy {
+        try {
+            LibVosk.setLogLevel(LogLevel.WARNINGS)
+            true
+        } catch (t: Throwable) {
+            android.util.Log.e("PromptFlow", "No se pudo cargar Vosk", t)
+            false
+        }
     }
 
     // ───────────────────────── MethodChannel ─────────────────────────
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "isAvailable" -> result.success(modelLooksValid(call.argument<String>("modelPath")))
+            "isAvailable" -> result.success(voskLoaded && modelLooksValid(call.argument<String>("modelPath")))
             "start" -> start(call, result)
             "stop" -> {
                 stopListening()
@@ -82,6 +94,10 @@ class VoskSttPlugin(
 
     private fun start(call: MethodCall, result: MethodChannel.Result) {
         val path = call.argument<String>("modelPath")
+        if (!voskLoaded) {
+            result.error("stt_unavailable", "Vosk native library could not be loaded", null)
+            return
+        }
         if (!modelLooksValid(path)) {
             result.error("stt_no_model", "Model not found at $path", null)
             return
@@ -115,12 +131,12 @@ class VoskSttPlugin(
                         service = svc
                         svc.startListening(this)
                         result.success(null)
-                    } catch (e: Exception) {
+                    } catch (e: Throwable) {
                         rec.close()
                         result.error("stt_start_failed", "Could not open the microphone: ${e.message}", null)
                     }
                 }
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 main.post { result.error("stt_start_failed", "Could not load the model: ${e.message}", null) }
             }
         }

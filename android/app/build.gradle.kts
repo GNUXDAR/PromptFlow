@@ -67,7 +67,11 @@ android {
         } else {
             signingConfigs.getByName("debug")
         }
-        release { signingConfig = signing }
+        release {
+            signingConfig = signing
+            // Reglas para JNA/Vosk: sin ellas R8 rompe la carga nativa (ver el archivo).
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
         debug { signingConfig = signing }
     }
 }
