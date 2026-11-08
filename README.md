@@ -1,5 +1,7 @@
 # PromptFlow
 
+🌐 **Español** · [English](docs/i18n/en/README.md) · [Português](docs/i18n/pt/README.md) · [Français](docs/i18n/fr/README.md) · [Deutsch](docs/i18n/de/README.md) · [Italiano](docs/i18n/it/README.md) · [Русский](docs/i18n/ru/README.md) · [中文](docs/i18n/zh/README.md) · [日本語](docs/i18n/ja/README.md) · [한국어](docs/i18n/ko/README.md) · [हिन्दी](docs/i18n/hi/README.md) · [العربية](docs/i18n/ar/README.md)
+
 Teleprompter para Linux y Android: scroll suave a la frecuencia de la pantalla, espejo H/V, pausas y cues en el guion, control remoto por LAN (WebSocket), pedales Bluetooth y seguimiento por voz local (Vosk).
 
 ```bash

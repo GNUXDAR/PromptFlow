@@ -14,6 +14,16 @@ import '../../remote/protocol/messages.dart';
 import '../../remote/server/remote_server.dart';
 import '../../voice/voice_models.dart';
 import '../controllers/prompter_controller.dart';
+import '../l10n.dart';
+
+/// Texto traducido de un problema de voz.
+String voiceIssueText(AppLocalizations l10n, VoiceIssue i) => switch (i.kind) {
+      VoiceIssueKind.noModel => l10n.voiceErrorNoModel,
+      VoiceIssueKind.noEngine => l10n.voiceErrorNoEngine,
+      VoiceIssueKind.permissionDenied => l10n.voiceErrorPermission,
+      VoiceIssueKind.downloadFailed => l10n.voiceErrorDownload(i.detail ?? ''),
+      VoiceIssueKind.engineError => l10n.voiceErrorEngine(i.detail ?? ''),
+    };
 
 /// Vista de lectura a pantalla completa. Hospeda el servidor de control
 /// remoto mientras está abierta (Linux o Android en modo prompter).
@@ -160,12 +170,14 @@ class _HudState extends State<_Hud> {
     final c = widget.controller;
     final e = c.engine;
     final t = Theme.of(context).textTheme;
+    final l10n = context.l10n;
     final status = switch (e.status) {
-      PlaybackStatus.playing => 'Reproduciendo',
-      PlaybackStatus.autoPaused => 'Pausa ${((e.autoPauseLeft?.inMilliseconds ?? 0) / 1000).toStringAsFixed(1)} s',
-      PlaybackStatus.holding => 'Pausa — pulsa Play',
-      PlaybackStatus.finished => 'Fin',
-      PlaybackStatus.stopped => 'Detenido',
+      PlaybackStatus.playing => l10n.statusPlaying,
+      PlaybackStatus.autoPaused =>
+        l10n.statusAutoPaused(((e.autoPauseLeft?.inMilliseconds ?? 0) / 1000).toStringAsFixed(1)),
+      PlaybackStatus.holding => l10n.statusHolding,
+      PlaybackStatus.finished => l10n.statusFinished,
+      PlaybackStatus.stopped => l10n.statusStopped,
     };
 
     return Column(
@@ -177,7 +189,7 @@ class _HudState extends State<_Hud> {
             bottom: false,
             child: Row(children: [
               IconButton(
-                tooltip: 'Salir (Esc)',
+                tooltip: l10n.prompterExit,
                 onPressed: () => Navigator.of(context).maybePop(),
                 icon: const Icon(Icons.arrow_back),
               ),
@@ -188,11 +200,14 @@ class _HudState extends State<_Hud> {
                 future: widget.ips,
                 builder: (context, snap) {
                   final server = c.server;
-                  final text = c.voiceError ?? c.serverError ??
-                      (server.running
-                          ? '${(snap.data ?? const []).take(1).join()}:${server.port}  PIN ${server.pin}  '
-                              '· ${server.clientCount} mando(s)'
-                          : 'Servidor detenido');
+                  final text = c.voiceError != null
+                      ? voiceIssueText(l10n, c.voiceError!)
+                      : c.serverError != null
+                          ? l10n.prompterServerPortError(PfProtocol.defaultWsPort, c.serverError!)
+                          : server.running
+                              ? l10n.prompterServerInfo(
+                                  (snap.data ?? const []).take(1).join(), server.port!, server.pin, server.clientCount)
+                              : l10n.prompterServerStopped;
                   return Text(text, style: t.bodySmall?.copyWith(color: PrompterPalette.dim));
                 },
               ),
@@ -213,52 +228,52 @@ class _HudState extends State<_Hud> {
               runSpacing: 4,
               children: [
                 IconButton(
-                  tooltip: 'Atrás 5 s (Re Pág)',
+                  tooltip: l10n.prompterBack5,
                   onPressed: () => widget.onCommand(const SeekCommand(-5)),
                   icon: const Icon(Icons.replay_5),
                 ),
                 IconButton.filled(
-                  tooltip: e.isPlaying ? 'Pausa (Espacio)' : 'Reproducir (Espacio)',
+                  tooltip: e.isPlaying ? l10n.prompterPause : l10n.prompterPlay,
                   iconSize: 36,
                   onPressed: () => widget.onCommand(const ToggleCommand()),
                   icon: Icon(e.isPlaying ? Icons.pause : Icons.play_arrow),
                 ),
                 IconButton(
-                  tooltip: 'Adelante 5 s (Av Pág)',
+                  tooltip: l10n.prompterForward5,
                   onPressed: () => widget.onCommand(const SeekCommand(5)),
                   icon: const Icon(Icons.forward_5),
                 ),
                 const SizedBox(width: 12),
                 IconButton(
-                  tooltip: 'Más lento (↓)',
+                  tooltip: l10n.prompterSlower,
                   onPressed: () => widget.onCommand(const NudgeSpeedCommand(-10)),
                   icon: const Icon(Icons.remove),
                 ),
-                Text('${e.wpm.round()} WPM', style: t.titleMedium),
+                Text(l10n.prompterWpm(e.wpm.round()), style: t.titleMedium),
                 IconButton(
-                  tooltip: 'Más rápido (↑)',
+                  tooltip: l10n.prompterFaster,
                   onPressed: () => widget.onCommand(const NudgeSpeedCommand(10)),
                   icon: const Icon(Icons.add),
                 ),
                 const SizedBox(width: 12),
-                Text('$status · quedan ${formatDuration(e.remaining)}', style: t.bodyMedium),
+                Text(l10n.prompterStatusLine(status, formatDuration(e.remaining)), style: t.bodyMedium),
                 if (c.voiceAvailable)
                   IconButton(
-                    tooltip: c.voiceActive ? 'Desactivar seguimiento por voz' : 'Seguir mi voz',
+                    tooltip: c.voiceActive ? l10n.prompterVoiceOff : l10n.prompterVoiceOn,
                     isSelected: c.voiceActive,
                     onPressed: () => widget.onCommand(VoiceSyncCommand(!c.voiceActive)),
                     icon: const Icon(Icons.mic_none),
                     selectedIcon: const Icon(Icons.mic),
                   ),
                 PopupMenuButton<String>(
-                  tooltip: 'Ir a sección',
+                  tooltip: l10n.prompterGoToSection,
                   icon: const Icon(Icons.bookmarks_outlined),
                   onSelected: (id) => widget.onCommand(JumpCommand(id)),
                   itemBuilder: (_) => [
                     for (final s in c.script.sections) PopupMenuItem(value: s.id, child: Text(s.title)),
                   ],
                 ),
-                IconButton(tooltip: 'Ajustes (S)', onPressed: widget.onSettings, icon: const Icon(Icons.tune)),
+                IconButton(tooltip: l10n.prompterSettings, onPressed: widget.onSettings, icon: const Icon(Icons.tune)),
               ],
             ),
           ),
@@ -278,6 +293,7 @@ class _SettingsSheet extends StatelessWidget {
       listenable: controller,
       builder: (context, _) {
         final s = controller.settings;
+        final l10n = context.l10n;
         void set(PrompterSettings Function(PrompterSettings) f) => controller.updateSettings(f);
         Widget slider(String label, double value, double min, double max, String shown,
                 PrompterSettings Function(PrompterSettings, double) apply) =>
@@ -293,22 +309,22 @@ class _SettingsSheet extends StatelessWidget {
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
-              slider('Tamaño de letra', s.fontSize, 24, 160, s.fontSize.round().toString(),
+              slider(l10n.settingsFontSize, s.fontSize, 24, 160, s.fontSize.round().toString(),
                   (p, v) => p.copyWith(fontSize: v)),
-              slider('Interlineado', s.lineHeight, 1.0, 2.2, s.lineHeight.toStringAsFixed(2),
+              slider(l10n.settingsLineHeight, s.lineHeight, 1.0, 2.2, s.lineHeight.toStringAsFixed(2),
                   (p, v) => p.copyWith(lineHeight: v)),
-              slider('Margen lateral', s.horizontalMargin, 0, 0.3, '${(s.horizontalMargin * 100).round()} %',
+              slider(l10n.settingsMargin, s.horizontalMargin, 0, 0.3, '${(s.horizontalMargin * 100).round()} %',
                   (p, v) => p.copyWith(horizontalMargin: v)),
-              slider('Línea de enfoque', s.focusLine, 0.1, 0.9, '${(s.focusLine * 100).round()} %',
+              slider(l10n.settingsFocusLine, s.focusLine, 0.1, 0.9, '${(s.focusLine * 100).round()} %',
                   (p, v) => p.copyWith(focusLine: v)),
-              slider('Velocidad', s.wpm, PrompterSettings.minWpm, PrompterSettings.maxWpm, '${s.wpm.round()}',
+              slider(l10n.settingsSpeed, s.wpm, PrompterSettings.minWpm, PrompterSettings.maxWpm, '${s.wpm.round()}',
                   (p, v) => p.copyWith(wpm: v)),
               Row(children: [
-                const SizedBox(width: 150, child: Text('Color del texto')),
+                SizedBox(width: 150, child: Text(l10n.settingsTextColor)),
                 SegmentedButton<int>(
-                  segments: const [
-                    ButtonSegment(value: 0, label: Text('Blanco')),
-                    ButtonSegment(value: 1, label: Text('Amarillo')),
+                  segments: [
+                    ButtonSegment(value: 0, label: Text(l10n.settingsWhite)),
+                    ButtonSegment(value: 1, label: Text(l10n.settingsYellow)),
                   ],
                   selected: {s.textColor == PrompterPalette.yellow ? 1 : 0},
                   onSelectionChanged: (v) => set((p) => p.copyWith(
@@ -316,17 +332,17 @@ class _SettingsSheet extends StatelessWidget {
                 ),
               ]),
               SwitchListTile(
-                title: const Text('Espejo horizontal (H)'),
+                title: Text(l10n.settingsMirrorH),
                 value: s.mirrorHorizontal,
                 onChanged: (v) => set((p) => p.copyWith(mirrorHorizontal: v)),
               ),
               SwitchListTile(
-                title: const Text('Espejo vertical (V)'),
+                title: Text(l10n.settingsMirrorV),
                 value: s.mirrorVertical,
                 onChanged: (v) => set((p) => p.copyWith(mirrorVertical: v)),
               ),
               SwitchListTile(
-                title: const Text('Guía de la línea de enfoque'),
+                title: Text(l10n.settingsFocusGuide),
                 value: s.showFocusGuide,
                 onChanged: (v) => set((p) => p.copyWith(showFocusGuide: v)),
               ),
@@ -351,23 +367,24 @@ class _VoiceSection extends StatelessWidget {
     final t = Theme.of(context).textTheme;
     final model = VoiceModels.byCode(c.settings.voiceLanguage);
     final progress = c.voiceModelProgress;
+    final l10n = context.l10n;
 
     final String status;
     if (progress != null) {
-      status = progress < 0 ? 'Instalando modelo…' : 'Descargando ${(progress * 100).round()} %';
+      status = progress < 0 ? l10n.voiceStatusInstalling : l10n.voiceStatusDownloading((progress * 100).round());
     } else if (c.voiceAvailable) {
-      status = 'Listo: pulsa el micrófono del HUD para que el texto siga tu voz';
+      status = l10n.voiceStatusReady;
     } else if (c.voiceModelInstalled) {
-      status = 'Modelo instalado, pero falta el motor Vosk (en Linux: tool/setup_vosk_linux.sh)';
+      status = l10n.voiceStatusNoEngine;
     } else {
-      status = 'Modelo no instalado (${model.sizeMb} MB, se descarga una sola vez)';
+      status = l10n.voiceStatusNoModel(model.sizeMb);
     }
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text('Seguimiento por voz', style: t.titleMedium),
+      Text(l10n.voiceTitle, style: t.titleMedium),
       const SizedBox(height: 8),
       Row(children: [
-        const SizedBox(width: 150, child: Text('Idioma de la voz')),
+        SizedBox(width: 150, child: Text(l10n.voiceLanguage)),
         DropdownButton<String>(
           value: model.code,
           onChanged: progress != null ? null : (v) => c.setVoiceLanguage(v!),
@@ -379,18 +396,18 @@ class _VoiceSection extends StatelessWidget {
       const SizedBox(height: 8),
       Text(status, style: t.bodyMedium),
       if (c.voiceError != null)
-        Text(c.voiceError!, style: t.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.error)),
+        Text(voiceIssueText(l10n, c.voiceError!), style: t.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.error)),
       if (progress != null) ...[
         const SizedBox(height: 8),
         LinearProgressIndicator(value: progress < 0 ? null : progress),
-        TextButton(onPressed: c.cancelVoiceModelInstall, child: const Text('Cancelar')),
+        TextButton(onPressed: c.cancelVoiceModelInstall, child: Text(l10n.commonCancel)),
       ] else if (!c.voiceModelInstalled)
         Padding(
           padding: const EdgeInsets.only(top: 8),
           child: FilledButton.icon(
             onPressed: c.installVoiceModel,
             icon: const Icon(Icons.download),
-            label: Text('Descargar modelo (${model.sizeMb} MB)'),
+            label: Text(l10n.voiceDownload(model.sizeMb)),
           ),
         ),
     ]);

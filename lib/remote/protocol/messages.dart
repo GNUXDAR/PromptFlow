@@ -32,10 +32,10 @@ final class PfMessage {
 
   /// Lanza [FormatException] si el mensaje es inválido o de otra versión.
   static PfMessage decode(Object? raw) {
-    if (raw is! String || raw.length > 512 * 1024) throw const FormatException('frame inválido');
+    if (raw is! String || raw.length > 512 * 1024) throw const FormatException('invalid frame');
     final j = jsonDecode(raw);
     if (j is! Map<String, Object?>) throw const FormatException('se esperaba un objeto');
-    if (j['v'] != PfProtocol.version) throw FormatException('versión no soportada: ${j['v']}');
+    if (j['v'] != PfProtocol.version) throw FormatException('unsupported version: ${j['v']}');
     final type = j['type'];
     if (type is! String) throw const FormatException('falta type');
     final payload = j['payload'];

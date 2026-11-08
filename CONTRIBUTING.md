@@ -1,5 +1,7 @@
 # Guía de contribución a PromptFlow
 
+🌐 **Español** · [English](docs/i18n/en/CONTRIBUTING.md) · [Português](docs/i18n/pt/CONTRIBUTING.md) · [Français](docs/i18n/fr/CONTRIBUTING.md) · [Deutsch](docs/i18n/de/CONTRIBUTING.md) · [Italiano](docs/i18n/it/CONTRIBUTING.md) · [Русский](docs/i18n/ru/CONTRIBUTING.md) · [中文](docs/i18n/zh/CONTRIBUTING.md) · [日本語](docs/i18n/ja/CONTRIBUTING.md) · [한국어](docs/i18n/ko/CONTRIBUTING.md) · [हिन्दी](docs/i18n/hi/CONTRIBUTING.md) · [العربية](docs/i18n/ar/CONTRIBUTING.md)
+
 ¡Gracias por tu interés en PromptFlow! Esta guía explica cómo proponer cambios, desde arreglar una errata hasta añadir una función completa. Está pensada para leerse de arriba abajo la primera vez y para consultarse por secciones después.
 
 > **Nota:** si es tu primera contribución a un proyecto de código abierto, no te preocupes por hacerlo todo perfecto. Un PR pequeño con buena intención es mejor que ninguno; en la revisión te ayudaremos con el resto.

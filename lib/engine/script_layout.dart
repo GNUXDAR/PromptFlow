@@ -122,7 +122,7 @@ final class ScriptLayout {
           case PauseMark(:final duration):
             final at = charPos;
             final secs = duration == null ? '' : ' ${(duration.inMilliseconds / 1000).toStringAsFixed(1)}s';
-            push(' [PAUSA$secs] ',
+            push(' [PAUSE$secs] ',
                 base.copyWith(color: PrompterPalette.pause, fontSize: s.fontSize * 0.5, fontWeight: FontWeight.w800));
             pending.add((at, (yy) => LayoutMarker(kind: MarkerKind.pause, y: yy, duration: duration)));
           case CueMark(:final id, :final label):

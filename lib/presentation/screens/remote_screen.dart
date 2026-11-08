@@ -9,6 +9,7 @@ import '../../input/pedal_shortcuts.dart';
 import '../../remote/client/remote_client.dart';
 import '../../remote/discovery/lan_discovery.dart';
 import '../../remote/protocol/messages.dart';
+import '../l10n.dart';
 
 /// Mando remoto táctil (Android → prompter Linux, o entre dos dispositivos).
 class RemoteScreen extends StatefulWidget {
@@ -54,7 +55,7 @@ class _RemoteScreenState extends State<RemoteScreen> {
   Future<void> _connect(String host, int port) async {
     if (_pin.text.length != 4) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Introduce el PIN de 4 dígitos que muestra el prompter')));
+          .showSnackBar(SnackBar(content: Text(context.l10n.remotePinRequired)));
       return;
     }
     await _client.connect(host, port: port, pin: _pin.text);
@@ -69,19 +70,19 @@ class _RemoteScreenState extends State<RemoteScreen> {
             (_client.status == ConnectionStatus.reconnecting && _client.snapshot != null);
         return Scaffold(
           appBar: AppBar(
-            title: Text(connected ? (_client.serverName ?? 'Control remoto') : 'Conectar a un prompter'),
+            title: Text(connected ? (_client.serverName ?? context.l10n.remoteTitle) : context.l10n.remoteConnectTitle),
             actions: [
               if (connected) ...[
                 Center(
                   child: Text(
                     _client.status == ConnectionStatus.reconnecting
-                        ? 'Reconectando…'
-                        : 'RTT ${_client.rtt?.inMilliseconds ?? '–'} ms',
+                        ? context.l10n.remoteReconnecting
+                        : context.l10n.remoteRtt('${_client.rtt?.inMilliseconds ?? '–'}'),
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ),
                 IconButton(
-                  tooltip: 'Desconectar',
+                  tooltip: context.l10n.remoteDisconnect,
                   onPressed: _client.disconnect,
                   icon: const Icon(Icons.link_off),
                 ),
@@ -95,10 +96,11 @@ class _RemoteScreenState extends State<RemoteScreen> {
   }
 
   Widget _connectForm(BuildContext context) {
+    final l10n = context.l10n;
     final error = switch (_client.lastError) {
-      'bad_pin' => 'PIN incorrecto',
+      'bad_pin' => l10n.remoteBadPin,
       null => null,
-      final e => 'No se pudo conectar: $e',
+      final e => l10n.remoteConnectFailed(e),
     };
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -108,24 +110,24 @@ class _RemoteScreenState extends State<RemoteScreen> {
           keyboardType: TextInputType.number,
           maxLength: 4,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          decoration: const InputDecoration(labelText: 'PIN del prompter', border: OutlineInputBorder()),
+          decoration: InputDecoration(labelText: l10n.remotePinLabel, border: const OutlineInputBorder()),
         ),
         const SizedBox(height: 8),
         Row(children: [
-          Text('En la red local', style: Theme.of(context).textTheme.titleMedium),
+          Text(l10n.remoteOnLan, style: Theme.of(context).textTheme.titleMedium),
           const Spacer(),
           TextButton.icon(
             onPressed: _scanning ? null : _scan,
             icon: _scanning
                 ? const SizedBox.square(dimension: 16, child: CircularProgressIndicator(strokeWidth: 2))
                 : const Icon(Icons.refresh),
-            label: const Text('Buscar'),
+            label: Text(l10n.remoteSearch),
           ),
         ]),
         if (_found.isEmpty && !_scanning)
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8),
-            child: Text('No se encontró ningún prompter. Ábrelo en el equipo Linux o usa la IP manual.'),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text(l10n.remoteNoneFound),
           ),
         for (final s in _found)
           ListTile(
@@ -137,7 +139,7 @@ class _RemoteScreenState extends State<RemoteScreen> {
         const Divider(height: 32),
         TextField(
           controller: _host,
-          decoration: const InputDecoration(labelText: 'IP manual (ej. 192.168.1.20)', border: OutlineInputBorder()),
+          decoration: InputDecoration(labelText: l10n.remoteManualIp, border: const OutlineInputBorder()),
           onSubmitted: (_) => _connect(_host.text.trim(), PfProtocol.defaultWsPort),
         ),
         const SizedBox(height: 8),
@@ -145,7 +147,7 @@ class _RemoteScreenState extends State<RemoteScreen> {
           onPressed: _client.status == ConnectionStatus.connecting
               ? null
               : () => _connect(_host.text.trim(), PfProtocol.defaultWsPort),
-          child: const Text('Conectar'),
+          child: Text(l10n.remoteConnect),
         ),
         if (error != null)
           Padding(
@@ -195,6 +197,7 @@ class _ControlPadState extends State<_ControlPad> {
     if (s == null) return const Center(child: CircularProgressIndicator());
     final word = s.wordAt(DateTime.now()).clamp(0, s.wordCount.toDouble());
     final progress = s.wordCount <= 1 ? 0.0 : (word / (s.wordCount - 1)).clamp(0.0, 1.0);
+    final l10n = context.l10n;
 
     // Un pedal BT emparejado con el teléfono también controla el prompter.
     return PrompterShortcuts(
@@ -205,7 +208,7 @@ class _ControlPadState extends State<_ControlPad> {
           Text(s.scriptTitle ?? '', style: t.titleLarge, maxLines: 2, overflow: TextOverflow.ellipsis),
           const SizedBox(height: 12),
           Semantics(
-            label: 'Posición en el guion',
+            label: l10n.remotePosition,
             child: Slider(
               value: _scrub ?? progress.toDouble(),
               onChanged: (v) => setState(() => _scrub = v),
@@ -216,35 +219,35 @@ class _ControlPadState extends State<_ControlPad> {
             ),
           ),
           Row(children: [
-            Text(_statusLabel(s.status)),
+            Text(_statusLabel(l10n, s.status)),
             const Spacer(),
-            Text('Quedan ${formatDuration(Duration(milliseconds: s.remainingMs))}'),
+            Text(l10n.remoteRemaining(formatDuration(Duration(milliseconds: s.remainingMs)))),
           ]),
           const SizedBox(height: 24),
           Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-            _BigButton(icon: Icons.replay_5, label: 'Atrás 5 s', onTap: () => _send(const SeekCommand(-5))),
+            _BigButton(icon: Icons.replay_5, label: l10n.remoteBack5, onTap: () => _send(const SeekCommand(-5))),
             _BigButton(
               icon: s.playing ? Icons.pause : Icons.play_arrow,
-              label: s.playing ? 'Pausa' : 'Play',
+              label: s.playing ? l10n.remotePause : l10n.remotePlay,
               primary: true,
               onTap: () => _send(const ToggleCommand()),
             ),
-            _BigButton(icon: Icons.forward_5, label: 'Adelante 5 s', onTap: () => _send(const SeekCommand(5))),
+            _BigButton(icon: Icons.forward_5, label: l10n.remoteForward5, onTap: () => _send(const SeekCommand(5))),
           ]),
           const SizedBox(height: 24),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             IconButton.outlined(
-              tooltip: 'Más lento',
+              tooltip: l10n.remoteSlower,
               iconSize: 32,
               onPressed: () => _send(const NudgeSpeedCommand(-10)),
               icon: const Icon(Icons.remove),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Text('${s.wpm.round()} WPM', style: t.headlineSmall),
+              child: Text(l10n.prompterWpm(s.wpm.round()), style: t.headlineSmall),
             ),
             IconButton.outlined(
-              tooltip: 'Más rápido',
+              tooltip: l10n.remoteFaster,
               iconSize: 32,
               onPressed: () => _send(const NudgeSpeedCommand(10)),
               icon: const Icon(Icons.add),
@@ -253,25 +256,25 @@ class _ControlPadState extends State<_ControlPad> {
           const SizedBox(height: 16),
           Wrap(spacing: 8, runSpacing: 8, alignment: WrapAlignment.center, children: [
             FilterChip(
-              label: const Text('Espejo H'),
+              label: Text(l10n.remoteMirrorH),
               selected: s.mirrorH,
               onSelected: (v) => _send(MirrorCommand(horizontal: v)),
             ),
             FilterChip(
-              label: const Text('Espejo V'),
+              label: Text(l10n.remoteMirrorV),
               selected: s.mirrorV,
               onSelected: (v) => _send(MirrorCommand(vertical: v)),
             ),
             FilterChip(
-              label: const Text('Seguir voz'),
+              label: Text(l10n.remoteFollowVoice),
               selected: s.voice,
               onSelected: (v) => _send(VoiceSyncCommand(v)),
             ),
-            ActionChip(label: const Text('Inicio'), onPressed: () => _send(const GotoWordCommand(0))),
+            ActionChip(label: Text(l10n.remoteStart), onPressed: () => _send(const GotoWordCommand(0))),
           ]),
           if (client.sections.isNotEmpty) ...[
             const Divider(height: 32),
-            Text('Secciones y cues', style: t.titleMedium),
+            Text(l10n.remoteSections, style: t.titleMedium),
             for (final sec in client.sections)
               ListTile(
                 dense: true,
@@ -282,7 +285,7 @@ class _ControlPadState extends State<_ControlPad> {
           ],
           if (client.scripts.length > 1) ...[
             const Divider(height: 32),
-            Text('Cambiar de guion', style: t.titleMedium),
+            Text(l10n.remoteChangeScript, style: t.titleMedium),
             for (final sc in client.scripts)
               ListTile(
                 dense: true,
@@ -297,12 +300,12 @@ class _ControlPadState extends State<_ControlPad> {
     );
   }
 
-  static String _statusLabel(String s) => switch (s) {
-        'playing' => 'Reproduciendo',
-        'autoPaused' => 'Pausa automática',
-        'holding' => 'Pausa del guion',
-        'finished' => 'Fin',
-        _ => 'Detenido',
+  static String _statusLabel(AppLocalizations l10n, String s) => switch (s) {
+        'playing' => l10n.statusPlaying,
+        'autoPaused' => l10n.statusAutoPausedShort,
+        'holding' => l10n.statusHoldingShort,
+        'finished' => l10n.statusFinished,
+        _ => l10n.statusStopped,
       };
 }
 

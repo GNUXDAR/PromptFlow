@@ -1,0 +1,288 @@
+{
+  "@@locale": "en",
+  "appTitle": "PromptFlow",
+  "@appTitle": {
+    "description": "App name. Do not translate."
+  },
+  "commonCancel": "Cancel",
+  "commonError": "Error: {message}",
+  "@commonError": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "homeImport": "Import .txt / .md",
+  "homeRemote": "Remote control",
+  "homeNewScript": "New script",
+  "homeEditScript": "Edit {title}",
+  "@homeEditScript": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "homeSampleFileName": "sample.md",
+  "@homeSampleFileName": {
+    "description": "File name of the sample script created on first run. Keep the .md extension, use only letters, digits and dashes."
+  },
+  "homeSampleScript": "# Sample script\n\n## Opening\n[CAM 1] Hello and **welcome** to PromptFlow. This sample script shows\nthe available markers. [PAUSE 2s]\n\nYou can put words in **bold** for emphasis, or ==highlight== them\nwhen they matter.\n\n## Demo\n[CAM 2] [CUE Demo] Now we switch cameras. Automatic pauses stop the text\nfor a few seconds and then continue on their own. [PAUSE 1.5s]\n\nA pause without a duration stops the text until you press Play. [PAUSE]\n\n## Closing\n[CAM 1] Thanks for watching. Control the prompter from your phone with\n**Remote control** mode, or with a Bluetooth pedal.\n",
+  "@homeSampleScript": {
+    "description": "Sample script in Markdown. Translate the prose and the section titles. Keep EXACTLY the markup: '#', '##', '**…**', '==…==', and the tags [CAM 1], [CAM 2], [CUE Demo], [PAUSE 2s], [PAUSE 1.5s], [PAUSE] in English and unchanged."
+  },
+  "editorNameHint": "name.md",
+  "editorSave": "Save (Ctrl+S)",
+  "editorRehearse": "Rehearse in the prompter",
+  "editorSavedTo": "Saved to {path}",
+  "@editorSavedTo": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "editorUnsavedTitle": "Unsaved changes",
+  "editorUnsavedBody": "Leave without saving?",
+  "editorLeave": "Leave",
+  "editorBodyHint": "# Title\n\n## Section\n[CAM 1] Script text with **emphasis**. [PAUSE 2s]",
+  "@editorBodyHint": {
+    "description": "Placeholder of the editor. Keep the markup and the [CAM 1] / [PAUSE 2s] tags unchanged."
+  },
+  "editorBold": "Bold",
+  "editorHighlight": "Highlight",
+  "editorSection": "## Section",
+  "@editorSection": {
+    "description": "Toolbar chip that inserts a section heading. Keep the leading '## '."
+  },
+  "editorPause2s": "Pause 2s",
+  "editorPauseManual": "Manual pause",
+  "editorCue": "Cue",
+  "editorCueSnippet": "[CUE name] ",
+  "@editorCueSnippet": {
+    "description": "Inserted text. Keep '[CUE ' and ']' unchanged, translate only 'name'."
+  },
+  "editorStats": "{words} words · {markers} markers",
+  "@editorStats": {
+    "placeholders": {
+      "words": {
+        "type": "int"
+      },
+      "markers": {
+        "type": "int"
+      }
+    }
+  },
+  "editorDurationAt": "Duration at {wpm} WPM: {duration}",
+  "@editorDurationAt": {
+    "placeholders": {
+      "wpm": {
+        "type": "int"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "editorTargetHint": "Target duration",
+  "editorNoTarget": "No target",
+  "editorMinutes": "{minutes} min",
+  "@editorMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "editorPausesExceedTarget": "The pauses exceed the target",
+  "editorNeededWpm": "You need {wpm} WPM",
+  "@editorNeededWpm": {
+    "placeholders": {
+      "wpm": {
+        "type": "int"
+      }
+    }
+  },
+  "prompterExit": "Exit (Esc)",
+  "prompterServerInfo": "{address}:{port}  PIN {pin}  · {count, plural, =0{no remotes} =1{1 remote} other{{count} remotes}}",
+  "@prompterServerInfo": {
+    "placeholders": {
+      "address": {
+        "type": "String"
+      },
+      "port": {
+        "type": "int"
+      },
+      "pin": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "prompterServerStopped": "Server stopped",
+  "prompterServerPortError": "Could not open port {port}: {message}",
+  "@prompterServerPortError": {
+    "placeholders": {
+      "port": {
+        "type": "int"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "prompterBack5": "Back 5 s (Page Up)",
+  "prompterForward5": "Forward 5 s (Page Down)",
+  "prompterPlay": "Play (Space)",
+  "prompterPause": "Pause (Space)",
+  "prompterSlower": "Slower (↓)",
+  "prompterFaster": "Faster (↑)",
+  "prompterWpm": "{wpm} WPM",
+  "@prompterWpm": {
+    "placeholders": {
+      "wpm": {
+        "type": "int"
+      }
+    }
+  },
+  "prompterStatusLine": "{status} · {remaining} left",
+  "@prompterStatusLine": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      },
+      "remaining": {
+        "type": "String"
+      }
+    }
+  },
+  "prompterVoiceOn": "Follow my voice",
+  "prompterVoiceOff": "Turn off voice following",
+  "prompterGoToSection": "Go to section",
+  "prompterSettings": "Settings (S)",
+  "statusPlaying": "Playing",
+  "statusAutoPaused": "Pause {seconds} s",
+  "@statusAutoPaused": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "statusAutoPausedShort": "Automatic pause",
+  "statusHolding": "Paused — press Play",
+  "statusHoldingShort": "Script pause",
+  "statusFinished": "End",
+  "statusStopped": "Stopped",
+  "settingsFontSize": "Font size",
+  "settingsLineHeight": "Line spacing",
+  "settingsMargin": "Side margin",
+  "settingsFocusLine": "Focus line",
+  "settingsSpeed": "Speed",
+  "settingsTextColor": "Text color",
+  "settingsWhite": "White",
+  "settingsYellow": "Yellow",
+  "settingsMirrorH": "Horizontal mirror (H)",
+  "settingsMirrorV": "Vertical mirror (V)",
+  "settingsFocusGuide": "Focus line guide",
+  "voiceTitle": "Voice following",
+  "voiceLanguage": "Voice language",
+  "voiceStatusDownloading": "Downloading {percent} %",
+  "@voiceStatusDownloading": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "voiceStatusInstalling": "Installing model…",
+  "voiceStatusReady": "Ready: press the HUD microphone and the text will follow your voice",
+  "voiceStatusNoEngine": "Model installed, but the Vosk engine is missing (on Linux: tool/setup_vosk_linux.sh)",
+  "voiceStatusNoModel": "Model not installed ({size} MB, downloaded only once)",
+  "@voiceStatusNoModel": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "voiceDownload": "Download model ({size} MB)",
+  "@voiceDownload": {
+    "placeholders": {
+      "size": {
+        "type": "int"
+      }
+    }
+  },
+  "voiceErrorNoModel": "Download the voice model in Settings → Voice",
+  "voiceErrorNoEngine": "Vosk is not installed (tool/setup_vosk_linux.sh)",
+  "voiceErrorPermission": "Microphone permission denied. Allow it in the system settings to use voice following.",
+  "voiceErrorDownload": "Could not download the model: {message}",
+  "@voiceErrorDownload": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "voiceErrorEngine": "Voice recognition error: {message}",
+  "@voiceErrorEngine": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "remoteTitle": "Remote control",
+  "remoteConnectTitle": "Connect to a prompter",
+  "remoteReconnecting": "Reconnecting…",
+  "remoteRtt": "RTT {ms} ms",
+  "@remoteRtt": {
+    "placeholders": {
+      "ms": {
+        "type": "String"
+      }
+    }
+  },
+  "remoteDisconnect": "Disconnect",
+  "remotePinRequired": "Enter the 4-digit PIN shown on the prompter",
+  "remoteBadPin": "Wrong PIN",
+  "remoteConnectFailed": "Could not connect: {message}",
+  "@remoteConnectFailed": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "remotePinLabel": "Prompter PIN",
+  "remoteOnLan": "On the local network",
+  "remoteSearch": "Search",
+  "remoteNoneFound": "No prompter found. Open it on the Linux computer or use the manual IP.",
+  "remoteManualIp": "Manual IP (e.g. 192.168.1.20)",
+  "remoteConnect": "Connect",
+  "remotePosition": "Position in the script",
+  "remoteRemaining": "{remaining} left",
+  "@remoteRemaining": {
+    "placeholders": {
+      "remaining": {
+        "type": "String"
+      }
+    }
+  },
+  "remoteBack5": "Back 5 s",
+  "remoteForward5": "Forward 5 s",
+  "remotePlay": "Play",
+  "remotePause": "Pause",
+  "remoteSlower": "Slower",
+  "remoteFaster": "Faster",
+  "remoteMirrorH": "Mirror H",
+  "remoteMirrorV": "Mirror V",
+  "remoteFollowVoice": "Follow voice",
+  "remoteStart": "Start",
+  "remoteSections": "Sections and cues",
+  "remoteChangeScript": "Change script"
+}

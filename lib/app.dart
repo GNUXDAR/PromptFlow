@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'data/repositories/script_repository.dart';
 import 'domain/entities/prompter_settings.dart';
+import 'presentation/l10n.dart';
 import 'presentation/screens/home_screen.dart';
 
 class PromptFlowApp extends StatelessWidget {
@@ -15,7 +16,13 @@ class PromptFlowApp extends StatelessWidget {
     ).copyWith(surface: const Color(0xFF0B0B0B), primary: PrompterPalette.yellow, onPrimary: Colors.black);
 
     return MaterialApp(
-      title: 'PromptFlow',
+      onGenerateTitle: (context) => context.l10n.appTitle,
+      // Idioma del sistema; si no está traducido, inglés (primero de la lista).
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: [
+        const Locale('en'),
+        ...AppLocalizations.supportedLocales.where((l) => l.languageCode != 'en'),
+      ],
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.dark,
       darkTheme: ThemeData(
